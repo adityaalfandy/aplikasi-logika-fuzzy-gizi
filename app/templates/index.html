@@ -3,51 +3,62 @@
 {% block title %}Beranda - NutriWise AI{% endblock %}
 
 {% block content %}
-<div class="max-w-6xl mx-auto px-4 py-16 sm:py-24">
-    <div class="text-center">
-        <h1 class="text-4xl font-extrabold text-slate-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
-            Kalkulator Nutrisi AI dengan <span class="text-emerald-600">Logika Fuzzy</span>
-        </h1>
-        <p class="max-w-xl mt-5 mx-auto text-xl text-slate-500">
-            Dapatkan rekomendasi kalori dan makronutrisi harian Anda secara presisi dengan sistem kecerdasan buatan Sugeno Fuzzy Inference System.
+<div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-20 sm:py-32">
+    <!-- Hero Section (Thesis Statement) -->
+    <div class="max-w-4xl">
+        <p class="font-mono text-sm text-brand-blue mb-4 tracking-widest uppercase flex items-center">
+            <span class="w-8 h-px bg-brand-blue mr-4"></span>
+            Sugeno Inference System
         </p>
-        <div class="mt-8 flex justify-center">
-            <a href="{{ url_for('main.calculator') }}" class="px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 md:py-4 md:text-lg md:px-10 shadow">
-                Coba Kalkulator
+        
+        <h1 class="font-display font-bold text-5xl sm:text-6xl md:text-7xl leading-[1.1] tracking-tight text-brand-ink mb-8">
+            Kalkulasi nutrisi yang tidak kaku. 
+            <span class="text-slate-400">Presisi dari kompleksitas.</span>
+        </h1>
+        
+        <p class="font-sans text-lg md:text-xl text-slate-600 mb-12 max-w-2xl leading-relaxed">
+            Metode tradisional menghitung kebutuhan kalori secara biner. NutriWise AI menggunakan Logika Fuzzy untuk memetakan irisan antara batas usia, berat badan, dan aktivitas fisik—memberikan target kalori harian yang spesifik untuk biometrik Anda.
+        </p>
+        
+        <div class="flex items-center space-x-6">
+            <a href="{{ url_for('main.calculator') }}" class="btn-primary flex items-center group">
+                Mulai Kalkulasi
+                <svg class="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </a>
+            <span class="font-mono text-xs text-slate-400">V.1.0.0 (BETA)</span>
         </div>
     </div>
 
-    <!-- Features -->
-    <div class="mt-24">
-        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <!-- Feature 1 -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center hover:shadow-md transition">
-                <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
-                </div>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Model Fuzzy Logic</h3>
-                <p class="text-slate-500 text-sm">Menghitung BMI, umur, dan aktivitas fisik dengan derajat keanggotaan untuk hasil yang lebih adaptif dan akurat dibanding rumus statis.</p>
-            </div>
-
-            <!-- Feature 2 -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center hover:shadow-md transition">
-                <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mb-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                </div>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Personalisasi Penuh</h3>
-                <p class="text-slate-500 text-sm">Mendapatkan target kalori spesifik dan pemecahan makronutrisi yang disesuaikan secara dinamis untuk tubuh Anda.</p>
-            </div>
-
-            <!-- Feature 3 -->
-            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center hover:shadow-md transition">
-                <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mb-4">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-                <h3 class="text-lg font-bold text-slate-900 mb-2">Explainable AI (XAI)</h3>
-                <p class="text-slate-500 text-sm">Lihat secara transparan bagaimana sistem AI kami mengambil keputusan dan menghitung bobot nilai dari profil Anda.</p>
-            </div>
+    <!-- Structured Data/Features -->
+    <div class="mt-32 pt-16 hairline-top grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+        
+        <!-- Pillar 1 -->
+        <div>
+            <div class="font-mono text-xs text-slate-400 mb-4 border-l-2 border-brand-blue pl-3">01 / Arsitektur</div>
+            <h3 class="font-display font-semibold text-xl text-brand-ink mb-3">Model Fuzzy Logic</h3>
+            <p class="font-sans text-sm text-slate-600 leading-relaxed">
+                Alih-alih mengklasifikasikan "Aktif" atau "Tidak Aktif", sistem membaca 27 derajat keanggotaan silang untuk menentukan bobot adaptif yang menghasilkan luaran Sugeno yang kontinu.
+            </p>
         </div>
+
+        <!-- Pillar 2 -->
+        <div>
+            <div class="font-mono text-xs text-slate-400 mb-4 border-l-2 border-brand-blue pl-3">02 / Akurasi</div>
+            <h3 class="font-display font-semibold text-xl text-brand-ink mb-3">Target Spesifik</h3>
+            <p class="font-sans text-sm text-slate-600 leading-relaxed">
+                Mendapatkan satu angka pasti untuk target kalori dan pemecahan makronutrisi (karbohidrat, protein, lemak) tanpa pembulatan rentang yang menyesatkan.
+            </p>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div>
+            <div class="font-mono text-xs text-slate-400 mb-4 border-l-2 border-brand-coral pl-3">03 / Transparansi</div>
+            <h3 class="font-display font-semibold text-xl text-brand-ink mb-3">Explainable AI (XAI)</h3>
+            <p class="font-sans text-sm text-slate-600 leading-relaxed">
+                Setiap hasil kalkulasi dilengkapi dengan panel penelusuran. Pengguna dapat memvalidasi log inferensi dan melihat pembobotan dari setiap aturan secara langsung.
+            </p>
+        </div>
+
     </div>
 </div>
 {% endblock %}

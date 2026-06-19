@@ -4,40 +4,132 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}NutriWise AI{% endblock %}</title>
+    
+    <!-- Google Fonts: Space Grotesk (Display), Inter (Body), JetBrains Mono (Data) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS via CDN with Custom Config -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Space Grotesk', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            blue: '#2563EB',      // Primary Accent
+                            ink: '#0F172A',       // Main Text
+                            coral: '#F05252',     // Highlight for AI Data
+                            alabaster: '#F9FAFB', // Main BG
+                            line: '#E5E7EB'       // Hairline borders
+                        }
+                    }
+                }
+            }
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        body { 
+            background-color: #F9FAFB; 
+            color: #0F172A; 
+            -webkit-font-smoothing: antialiased; 
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* Structural Classes */
+        .hairline-border {
+            border: 1px solid #E5E7EB;
+        }
+        
+        .hairline-bottom {
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        /* Nav & Input Focus States */
+        .input-crisp {
+            border: 1px solid #E5E7EB;
+            border-radius: 0;
+            background: #FFFFFF;
+            transition: border-color 0.15s ease;
+        }
+        .input-crisp:focus {
+            outline: none;
+            border-color: #2563EB;
+            box-shadow: 0 0 0 1px #2563EB;
+        }
+
+        /* Distinctive Button */
+        .btn-primary {
+            background-color: #2563EB;
+            color: #FFFFFF;
+            border: none;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            padding: 0.75rem 1.5rem;
+            transition: background-color 0.2s ease;
+        }
+        .btn-primary:hover {
+            background-color: #1D4ED8;
+        }
+        
+        /* Number data styling */
+        .data-mono {
+            font-family: 'JetBrains Mono', monospace;
+            letter-spacing: -0.03em;
+        }
+        
+        /* Clean scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F9FAFB; }
+        ::-webkit-scrollbar-thumb { background: #CBD5E1; }
+        ::-webkit-scrollbar-thumb:hover { background: #94A3B8; }
+    </style>
 </head>
-<body class="bg-slate-50 min-h-screen flex flex-col text-slate-800">
-    <!-- Navbar -->
-    <nav class="bg-white shadow-sm border-b border-slate-200">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="flex justify-between h-16">
+<body class="min-h-screen flex flex-col font-sans">
+    
+    <!-- Top Navigation (Structural, Blueprint style) -->
+    <nav class="bg-white hairline-bottom">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12">
+            <div class="flex justify-between h-16 items-center">
                 <div class="flex items-center">
-                    <a href="{{ url_for('main.index') }}" class="font-bold text-xl text-emerald-600">NutriWise AI</a>
+                    <a href="{{ url_for('main.index') }}" class="font-display font-bold text-xl tracking-tight text-brand-ink">
+                        NutriWise<span class="text-brand-blue">.ai</span>
+                    </a>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="{{ url_for('main.calculator') }}" class="text-slate-600 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition">Kalkulator</a>
+                <div class="flex items-center space-x-6">
+                    <a href="{{ url_for('main.calculator') }}" class="text-sm font-medium text-slate-600 hover:text-brand-blue transition-colors">Kalkulator</a>
                     {% if current_user.is_authenticated %}
-                        <a href="{{ url_for('progress.dashboard') }}" class="text-slate-600 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition">Dashboard</a>
-                        <span class="text-sm text-slate-500 ml-2 border-l pl-4 border-slate-300">Halo, {{ current_user.nama }}</span>
-                        <a href="{{ url_for('auth.logout') }}" class="text-red-500 hover:text-red-700 px-3 py-2 text-sm font-medium transition">Logout</a>
+                        <a href="{{ url_for('progress.dashboard') }}" class="text-sm font-medium text-slate-600 hover:text-brand-blue transition-colors">Dashboard</a>
+                        <div class="h-4 w-px bg-slate-300"></div>
+                        <span class="text-xs font-mono text-slate-500 uppercase tracking-wider">{{ current_user.nama }}</span>
+                        <a href="{{ url_for('auth.logout') }}" class="text-xs font-medium text-slate-500 hover:text-brand-coral transition-colors underline decoration-slate-300 underline-offset-4">Logout</a>
                     {% else %}
-                        <a href="{{ url_for('auth.login') }}" class="text-slate-600 hover:text-emerald-600 px-3 py-2 text-sm font-medium transition">Login</a>
-                        <a href="{{ url_for('auth.register') }}" class="bg-emerald-600 text-white hover:bg-emerald-700 px-4 py-2 rounded-md text-sm font-medium shadow-sm transition">Daftar</a>
+                        <div class="h-4 w-px bg-slate-300"></div>
+                        <a href="{{ url_for('auth.login') }}" class="text-sm font-medium text-slate-600 hover:text-brand-blue transition-colors">Log in</a>
+                        <a href="{{ url_for('auth.register') }}" class="btn-primary text-sm px-4 py-1.5">Sign up</a>
                     {% endif %}
                 </div>
             </div>
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="flex-grow w-full">
-        <!-- Flash Messages -->
-        <div class="max-w-6xl mx-auto px-4 mt-4">
+    <!-- Main Content Area -->
+    <main class="flex-grow w-full relative">
+        <!-- Flash Messages positioned cleanly -->
+        <div class="max-w-3xl mx-auto px-6 pt-6">
             {% with messages = get_flashed_messages(with_categories=true) %}
                 {% if messages %}
                     {% for category, message in messages %}
-                        <div class="p-4 mb-4 text-sm rounded-lg {% if category == 'error' %}bg-red-100 text-red-700{% elif category == 'success' %}bg-emerald-100 text-emerald-700{% else %}bg-blue-100 text-blue-700{% endif %}" role="alert">
+                        <div class="mb-4 py-3 px-4 text-sm hairline-border {% if category == 'error' %}bg-red-50 border-red-200 text-red-800{% elif category == 'success' %}bg-green-50 border-green-200 text-green-800{% else %}bg-blue-50 border-blue-200 text-blue-800{% endif %}" role="alert">
                             {{ message }}
                         </div>
                     {% endfor %}
@@ -49,9 +141,10 @@
     </main>
 
     <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 mt-auto py-6">
-        <div class="max-w-6xl mx-auto px-4 text-center">
-            <p class="text-sm text-slate-500">&copy; 2026 NutriWise AI. Kalkulator Gizi dengan Kecerdasan Buatan.</p>
+    <footer class="bg-white hairline-top mt-auto py-8">
+        <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row justify-between items-center text-xs text-slate-500 font-mono">
+            <p>NutriWise AI System v1.0.0</p>
+            <p class="mt-2 md:mt-0">Fuzzy Logic Inference Engine</p>
         </div>
     </footer>
     

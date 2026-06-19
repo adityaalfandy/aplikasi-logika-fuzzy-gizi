@@ -3,115 +3,124 @@
 {% block title %}Progress Dashboard - NutriWise AI{% endblock %}
 
 {% block content %}
-<div class="max-w-7xl mx-auto px-4 py-8">
-    <div class="mb-8 flex justify-between items-center">
-        <h2 class="text-3xl font-bold text-slate-800">Progress Tracker</h2>
-        <a href="{{ url_for('report.export_pdf') }}" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md text-sm font-medium transition shadow-sm flex items-center gap-2">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+<div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
+    <!-- Header -->
+    <div class="mb-12 pb-6 hairline-bottom flex justify-between items-end">
+        <div>
+            <p class="font-mono text-xs text-slate-500 uppercase tracking-widest mb-2">Monitor</p>
+            <h2 class="font-display font-bold text-3xl text-brand-ink">Progress Tracker</h2>
+        </div>
+        <a href="{{ url_for('report.export_pdf') }}" class="btn-primary text-sm flex items-center group">
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             Export PDF
         </a>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
         
         <!-- Form Catat Progress -->
-        <div class="lg:col-span-1">
-            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Catat Progress Harian</h3>
-                <form method="POST" action="{{ url_for('progress.dashboard') }}" class="space-y-4">
+        <div class="lg:col-span-4">
+            <h3 class="font-display font-semibold text-xl text-brand-ink mb-6">Log Harian</h3>
+            <div class="hairline-border bg-white p-6 md:p-8">
+                <form method="POST" action="{{ url_for('progress.dashboard') }}" class="space-y-6">
                     {{ form.hidden_tag() }}
                     
-                    <div>
-                        {{ form.tanggal.label(class="block text-sm font-medium text-slate-700 mb-1") }}
-                        {{ form.tanggal(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500", type="date") }}
+                    <div class="flex flex-col">
+                        {{ form.tanggal.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
+                        {{ form.tanggal(class="input-crisp px-4 py-2 text-sm text-brand-ink data-mono", type="date") }}
                     </div>
                     
-                    <div>
-                        {{ form.berat_badan.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                    <div class="flex flex-col">
+                        {{ form.berat_badan.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
                         <div class="relative">
-                            {{ form.berat_badan(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500", step="0.1") }}
-                            <span class="absolute right-3 top-2 text-slate-400 text-sm">Kg</span>
+                            {{ form.berat_badan(class="input-crisp w-full px-4 py-2 text-sm text-brand-ink data-mono", step="0.1") }}
+                            <span class="absolute right-4 top-2.5 font-mono text-xs text-slate-400">KG</span>
                         </div>
                     </div>
                     
-                    <div>
-                        {{ form.kalori_aktual.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                    <div class="flex flex-col">
+                        {{ form.kalori_aktual.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
                         <div class="relative">
-                            {{ form.kalori_aktual(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500") }}
-                            <span class="absolute right-3 top-2 text-slate-400 text-sm">Kkal</span>
+                            {{ form.kalori_aktual(class="input-crisp w-full px-4 py-2 text-sm text-brand-ink data-mono") }}
+                            <span class="absolute right-4 top-2.5 font-mono text-xs text-slate-400">KCAL</span>
                         </div>
                     </div>
                     
-                    <div>
-                        {{ form.catatan.label(class="block text-sm font-medium text-slate-700 mb-1") }}
-                        {{ form.catatan(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500", rows="3", placeholder="Opsional") }}
+                    <div class="flex flex-col">
+                        {{ form.catatan.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
+                        {{ form.catatan(class="input-crisp px-4 py-2 text-sm text-brand-ink", rows="2") }}
                     </div>
                     
-                    <button type="submit" class="w-full bg-emerald-600 text-white font-bold py-2 px-4 rounded-md hover:bg-emerald-700 transition">
-                        Simpan Progress
-                    </button>
+                    <div class="pt-4 border-t border-slate-200">
+                        <button type="submit" class="btn-primary w-full text-sm">
+                            Simpan Log
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
 
         <!-- Charts & Logs -->
-        <div class="lg:col-span-2 space-y-8">
+        <div class="lg:col-span-8 space-y-12">
             <!-- Charts -->
-            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm">
-                <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Grafik Progress</h3>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-sm font-semibold text-slate-600 mb-2 text-center">Trend Berat Badan (kg)</h4>
-                        <div class="relative h-48 w-full">
-                            <canvas id="weightChart"></canvas>
+            <div>
+                <h3 class="font-display font-semibold text-xl text-brand-ink mb-6">Grafik Tren</h3>
+                <div class="hairline-border bg-white p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-500 mb-4 border-l-2 border-brand-blue pl-2">Trend Berat Badan</p>
+                            <div class="relative h-48 w-full">
+                                <canvas id="weightChart"></canvas>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-semibold text-slate-600 mb-2 text-center">Konsumsi Kalori (kkal)</h4>
-                        <div class="relative h-48 w-full">
-                            <canvas id="calorieChart"></canvas>
+                        <div>
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-500 mb-4 border-l-2 border-brand-ink pl-2">Konsumsi vs Target</p>
+                            <div class="relative h-48 w-full">
+                                <canvas id="calorieChart"></canvas>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- History Table -->
-            <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Riwayat Pencatatan</h3>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200">
-                        <thead class="bg-slate-50">
-                            <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Tanggal</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Berat (kg)</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Kalori Aktual</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Target</th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-slate-200">
-                            {% for log in logs %}
-                            <tr>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-900">{{ log.tanggal.strftime('%d %b %Y') }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm font-bold text-slate-700">{{ log.berat_badan }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-700">{{ log.kalori_aktual }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">{{ log.target_kalori }}</td>
-                                <td class="px-6 py-4 whitespace-nowrap text-sm">
-                                    {% if log.kalori_aktual > log.target_kalori %}
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">Surplus</span>
-                                    {% else %}
-                                        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">Sesuai/Defisit</span>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-sm text-slate-500">Belum ada riwayat progress.</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+            <div>
+                <h3 class="font-display font-semibold text-xl text-brand-ink mb-6">Riwayat Rekaman</h3>
+                <div class="hairline-border bg-white overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-slate-200">
+                            <thead class="bg-slate-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Tanggal</th>
+                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Berat</th>
+                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Aktual</th>
+                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Target AI</th>
+                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-slate-200">
+                                {% for log in logs %}
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-brand-ink">{{ log.tanggal.strftime('%d %b %y') }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-brand-ink">{{ log.berat_badan }} kg</td>
+                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-brand-ink">{{ log.kalori_aktual }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-slate-500">{{ log.target_kalori }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        {% if log.kalori_aktual > log.target_kalori %}
+                                            <span class="font-mono text-[10px] uppercase px-2 py-0.5 hairline-border text-red-600 bg-red-50 border-red-200">Surplus</span>
+                                        {% else %}
+                                            <span class="font-mono text-[10px] uppercase px-2 py-0.5 hairline-border text-green-600 bg-green-50 border-green-200">Defisit</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr>
+                                    <td colspan="5" class="px-6 py-8 text-center font-mono text-xs text-slate-400 uppercase tracking-widest">Null (0 logs)</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -123,6 +132,9 @@
 <script>
     const chartData = {{ chart_data|safe }};
     
+    // Add custom font to Chart.js
+    Chart.defaults.font.family = 'Inter';
+    
     if (chartData.dates.length > 0) {
         // Weight Chart
         const ctxWeight = document.getElementById('weightChart').getContext('2d');
@@ -131,12 +143,14 @@
             data: {
                 labels: chartData.dates,
                 datasets: [{
-                    label: 'Berat Badan (kg)',
+                    label: 'Berat',
                     data: chartData.weights,
-                    borderColor: 'rgb(59, 130, 246)',
-                    backgroundColor: 'rgba(59, 130, 246, 0.1)',
+                    borderColor: '#2563EB',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
                     borderWidth: 2,
-                    tension: 0.3,
+                    pointRadius: 3,
+                    pointBackgroundColor: '#2563EB',
+                    tension: 0.1,
                     fill: true
                 }]
             },
@@ -144,7 +158,14 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
-                scales: { y: { suggestedMin: Math.min(...chartData.weights) - 2 } }
+                scales: { 
+                    x: { ticks: { font: { family: 'JetBrains Mono', size: 10 } }, grid: { display: false } },
+                    y: { 
+                        suggestedMin: Math.min(...chartData.weights) - 2,
+                        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
+                        grid: { borderDash: [2, 4], color: '#E5E7EB' }
+                    } 
+                }
             }
         });
 
@@ -158,23 +179,31 @@
                     {
                         label: 'Aktual',
                         data: chartData.calories,
-                        backgroundColor: 'rgba(16, 185, 129, 0.7)'
+                        backgroundColor: '#0F172A',
+                        barPercentage: 0.6
                     },
                     {
                         label: 'Target',
                         data: chartData.targets,
                         type: 'line',
-                        borderColor: 'rgb(245, 158, 11)',
+                        borderColor: '#F05252',
                         borderWidth: 2,
-                        borderDash: [5, 5],
-                        pointRadius: 0
+                        pointRadius: 0,
+                        borderDash: [4, 4]
                     }
                 ]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
-                plugins: { legend: { display: false } }
+                plugins: { legend: { display: false } },
+                scales: { 
+                    x: { ticks: { font: { family: 'JetBrains Mono', size: 10 } }, grid: { display: false } },
+                    y: { 
+                        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
+                        grid: { borderDash: [2, 4], color: '#E5E7EB' }
+                    } 
+                }
             }
         });
     }
