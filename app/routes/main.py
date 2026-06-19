@@ -14,7 +14,15 @@ def index():
 def calculator():
     form = CalculatorForm()
     if form.validate_on_submit():
-        nama = form.nama.data
+        from flask_login import current_user
+        if current_user.is_authenticated:
+            nama = current_user.nama
+        else:
+            nama = form.nama.data
+            if not nama:
+                flash("Nama harus diisi.", "error")
+                return render_template('calculator.html', form=form)
+                
         umur = form.umur.data
         jenis_kelamin = form.jenis_kelamin.data
         berat_badan = form.berat_badan.data

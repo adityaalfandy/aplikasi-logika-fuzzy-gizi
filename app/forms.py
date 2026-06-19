@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, FloatField, SelectField, SubmitField
-from wtforms.validators import DataRequired, NumberRange, Length
+from wtforms.validators import DataRequired, NumberRange, Length, Optional
 
 class CalculatorForm(FlaskForm):
-    nama = StringField('Nama', validators=[DataRequired(), Length(max=100)])
+    nama = StringField('Nama', validators=[Optional(), Length(max=100)])
     umur = IntegerField('Umur', validators=[DataRequired(), NumberRange(min=10, max=100)])
     jenis_kelamin = SelectField('Jenis Kelamin', choices=[('L', 'Laki-laki'), ('P', 'Perempuan')], validators=[DataRequired()])
     berat_badan = FloatField('Berat Badan (kg)', validators=[DataRequired(), NumberRange(min=20, max=300)])
