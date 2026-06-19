@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Hasil & XAI Panel - NutriWise AI{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-8">
+    <div class="mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <h2 class="text-3xl font-bold text-slate-800">Hasil Analisis Nutrisi</h2>
+        <a href="{{ url_for('main.calculator') }}" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium border border-emerald-200 bg-emerald-50 hover:bg-emerald-100 px-4 py-2 rounded transition">&larr; Hitung Ulang</a>
+    </div>
+
+    <!-- Ringkasan Hasil -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <!-- BMI Card -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-blue-500">
+            <p class="text-sm text-slate-500 font-medium uppercase tracking-wide">Status BMI</p>
+            <p class="text-3xl font-bold text-slate-800 mt-2">{{ data.bmi }}</p>
+            <p class="text-sm mt-1 font-bold 
+                {% if data.status_bmi == 'Normal' %} text-emerald-600 
+                {% elif data.status_bmi == 'Underweight' %} text-yellow-600 
+                {% else %} text-red-600 {% endif %}">
+                {{ data.status_bmi }}
+            </p>
+        </div>
+        
+        <!-- Berat Ideal Card -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-purple-500">
+            <p class="text-sm text-slate-500 font-medium uppercase tracking-wide">Berat Badan Ideal</p>
+            <p class="text-3xl font-bold text-slate-800 mt-2">{{ data.berat_ideal }} <span class="text-base text-slate-400">kg</span></p>
+            <p class="text-sm text-slate-500 mt-1">Aktual: {{ data.berat_badan }} kg</p>
+        </div>
+
+        <!-- TDEE Card -->
+        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 border-l-4 border-l-orange-500">
+            <p class="text-sm text-slate-500 font-medium uppercase tracking-wide">Kalori TDEE (Statis)</p>
+            <p class="text-3xl font-bold text-slate-800 mt-2">{{ data.kalori_tdee }} <span class="text-base text-slate-400">kkal</span></p>
+            <p class="text-sm text-slate-500 mt-1">Rumus Mifflin-St Jeor</p>
+        </div>
+
+        <!-- Fuzzy Calorie Card -->
+        <div class="bg-emerald-50 p-6 rounded-xl shadow-sm border border-emerald-200 border-l-4 border-l-emerald-500">
+            <p class="text-sm text-emerald-700 font-bold uppercase tracking-wide flex items-center gap-1">Target Kalori AI</p>
+            <p class="text-3xl font-bold text-emerald-700 mt-2">{{ data.kalori_fuzzy }} <span class="text-base text-emerald-600">kkal</span></p>
+            <p class="text-sm text-emerald-600 mt-1">Disesuaikan Fuzzy Logic</p>
+        </div>
+    </div>
+
+    <!-- Makronutrisi -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+        <h3 class="text-xl font-bold text-slate-800 mb-4 border-b pb-2">Kebutuhan Makronutrisi</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-semibold text-blue-600">Karbohidrat</h4>
+                    <span class="text-slate-500 text-sm">50%</span>
+                </div>
+                <p class="text-2xl font-bold text-slate-800">{{ data.karbo_g }} <span class="text-sm text-slate-500">gram</span></p>
+                <div class="w-full bg-slate-200 rounded-full h-2 mt-3">
+                    <div class="bg-blue-500 h-2 rounded-full" style="width: 50%"></div>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-semibold text-red-600">Protein</h4>
+                    <span class="text-slate-500 text-sm">20%</span>
+                </div>
+                <p class="text-2xl font-bold text-slate-800">{{ data.protein_g }} <span class="text-sm text-slate-500">gram</span></p>
+                <div class="w-full bg-slate-200 rounded-full h-2 mt-3">
+                    <div class="bg-red-500 h-2 rounded-full" style="width: 20%"></div>
+                </div>
+            </div>
+
+            <div class="p-4 bg-slate-50 rounded-lg border border-slate-100">
+                <div class="flex justify-between items-center mb-2">
+                    <h4 class="font-semibold text-yellow-600">Lemak</h4>
+                    <span class="text-slate-500 text-sm">30%</span>
+                </div>
+                <p class="text-2xl font-bold text-slate-800">{{ data.lemak_g }} <span class="text-sm text-slate-500">gram</span></p>
+                <div class="w-full bg-slate-200 rounded-full h-2 mt-3">
+                    <div class="bg-yellow-500 h-2 rounded-full" style="width: 30%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rekomendasi Menu -->
+    <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200 mb-8">
+        <h3 class="text-xl font-bold text-slate-800 mb-2 border-b pb-2 flex items-center">
+            🍽️ Rekomendasi Menu Harian
+            <span class="ml-auto text-sm font-normal bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full">{{ data.rekomendasi_menu.kategori }}</span>
+        </h3>
+        <p class="text-sm text-slate-500 mb-4">Saran menu berdasarkan target kalori {{ data.kalori_fuzzy }} kkal.</p>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
+                <h4 class="font-bold text-emerald-700 mb-2">🍳 Sarapan (25%)</h4>
+                <p class="text-sm text-slate-700">{{ data.rekomendasi_menu.menu.sarapan }}</p>
+            </div>
+            <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
+                <h4 class="font-bold text-blue-700 mb-2">🍛 Siang (35%)</h4>
+                <p class="text-sm text-slate-700">{{ data.rekomendasi_menu.menu.siang }}</p>
+            </div>
+            <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
+                <h4 class="font-bold text-purple-700 mb-2">🥗 Malam (25%)</h4>
+                <p class="text-sm text-slate-700">{{ data.rekomendasi_menu.menu.malam }}</p>
+            </div>
+            <div class="border border-slate-200 p-4 rounded-lg bg-slate-50">
+                <h4 class="font-bold text-orange-700 mb-2">🥜 Camilan (15%)</h4>
+                <p class="text-sm text-slate-700">{{ data.rekomendasi_menu.menu.camilan }}</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- XAI Panel -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
+        <div class="bg-slate-800 px-6 py-4 flex justify-between items-center cursor-pointer hover:bg-slate-700 transition" id="xai-toggle">
+            <div class="flex items-center gap-2 text-white">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                <h3 class="font-bold text-lg">Panel Explainable AI (XAI)</h3>
+            </div>
+            <svg id="xai-icon" class="w-5 h-5 text-slate-300 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </div>
+        
+        <div id="xai-content" class="hidden p-6 bg-slate-50 border-t border-slate-200">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Fuzzy Input -->
+                <div class="lg:col-span-1 bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">1. Derajat Keanggotaan Input</h4>
+                    
+                    <div class="mb-4">
+                        <p class="text-sm font-semibold text-slate-700">BMI ({{ data.bmi }})</p>
+                        {% for k, v in data.fuzzy_detail.membership.bmi.items() %}
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="capitalize">{{ k }}</span>
+                            <span>{{ v }}</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1">
+                            <div class="bg-blue-500 h-1.5 rounded-full" style="width: {{ v * 100 }}%"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-4">
+                        <p class="text-sm font-semibold text-slate-700">Aktivitas ({{ data.aktivitas_val }})</p>
+                        {% for k, v in data.fuzzy_detail.membership.aktivitas.items() %}
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="capitalize">{{ k }}</span>
+                            <span>{{ v }}</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1">
+                            <div class="bg-orange-500 h-1.5 rounded-full" style="width: {{ v * 100 }}%"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div>
+                        <p class="text-sm font-semibold text-slate-700">Umur ({{ data.umur }})</p>
+                        {% for k, v in data.fuzzy_detail.membership.umur.items() %}
+                        <div class="flex justify-between text-xs mt-1">
+                            <span class="capitalize">{{ k }}</span>
+                            <span>{{ v }}</span>
+                        </div>
+                        <div class="w-full bg-slate-200 rounded-full h-1.5 mt-1">
+                            <div class="bg-purple-500 h-1.5 rounded-full" style="width: {{ v * 100 }}%"></div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <!-- Rule Evaluation Chart -->
+                <div class="lg:col-span-2 bg-white p-5 rounded-lg border border-slate-200 shadow-sm">
+                    <h4 class="font-bold text-slate-800 mb-4 border-b pb-2">2. Evaluasi Rule & Inferensi Sugeno</h4>
+                    <p class="text-sm text-slate-600 mb-4">Grafik di bawah ini menunjukkan aturan (rules) yang aktif. Batang biru mewakili bobot (Alpha), titik merah menunjukkan nilai Sugeno (Z).</p>
+                    
+                    <div class="relative h-64 w-full">
+                        <canvas id="fuzzyChart"></canvas>
+                    </div>
+                    
+                    <div class="mt-4 bg-slate-100 p-4 rounded-lg border border-slate-200 text-sm text-center">
+                        <p class="font-medium text-slate-700">Kalori Akhir = &Sigma; (Alpha * Z) / &Sigma; Alpha</p>
+                        <p class="font-bold text-slate-900 text-lg mt-1">
+                            = {{ data.kalori_fuzzy }} kkal
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.getElementById('xai-toggle').addEventListener('click', function() {
+        const content = document.getElementById('xai-content');
+        const icon = document.getElementById('xai-icon');
+        
+        if (content.classList.contains('hidden')) {
+            content.classList.remove('hidden');
+            icon.classList.add('rotate-180');
+            if(!window.chartInitialized) {
+                initChart();
+                window.chartInitialized = true;
+            }
+        } else {
+            content.classList.add('hidden');
+            icon.classList.remove('rotate-180');
+        }
+    });
+
+    const fuzzyData = {{ fuzzy_json|safe }};
+
+    function initChart() {
+        const ctx = document.getElementById('fuzzyChart').getContext('2d');
+        const activeRules = fuzzyData.rules.filter(r => r.alpha > 0);
+        
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: activeRules.map((_, i) => 'R' + (i+1)),
+                datasets: [
+                    {
+                        label: 'Bobot Alpha (α)',
+                        data: activeRules.map(r => r.alpha),
+                        backgroundColor: 'rgba(59, 130, 246, 0.5)',
+                        borderColor: 'rgb(59, 130, 246)',
+                        borderWidth: 1,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'Nilai Sugeno (Z)',
+                        data: activeRules.map(r => r.z),
+                        type: 'line',
+                        backgroundColor: 'rgba(239, 68, 68, 1)',
+                        borderColor: 'rgb(239, 68, 68)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: {
+                        type: 'linear', position: 'left',
+                        title: { display: true, text: 'Bobot (α)' },
+                        min: 0, max: 1
+                    },
+                    y1: {
+                        type: 'linear', position: 'right',
+                        title: { display: true, text: 'Kalori (Z)' },
+                        grid: { drawOnChartArea: false }
+                    }
+                }
+            }
+        });
+    }
+</script>
+{% endblock %}

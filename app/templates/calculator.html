@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Kalkulator Gizi - NutriWise AI{% endblock %}
+
+{% block content %}
+<div class="py-12 px-4 sm:px-6 lg:px-8">
+    <div class="max-w-2xl mx-auto bg-white p-8 sm:p-12 border border-slate-200 rounded-xl shadow-sm">
+        <div class="text-center mb-8">
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">Kalkulator Gizi</h2>
+            <p class="text-slate-500">Masukkan profil Anda untuk mendapatkan analisis cerdas.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('main.calculator') }}" class="space-y-6">
+            {{ form.hidden_tag() }}
+            
+            {% if not current_user.is_authenticated %}
+            <div>
+                {{ form.nama.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                {{ form.nama(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500", placeholder="Misal: Budi") }}
+                {% if form.nama.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.nama.errors[0] }}</p>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    {{ form.umur.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                    <div class="relative">
+                        {{ form.umur(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500", min="10", max="100") }}
+                        <span class="absolute right-3 top-2 text-slate-400 text-sm">Tahun</span>
+                    </div>
+                </div>
+
+                <div>
+                    {{ form.jenis_kelamin.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                    {{ form.jenis_kelamin(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white") }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    {{ form.berat_badan.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                    <div class="relative">
+                        {{ form.berat_badan(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500", step="0.1") }}
+                        <span class="absolute right-3 top-2 text-slate-400 text-sm">Kg</span>
+                    </div>
+                </div>
+
+                <div>
+                    {{ form.tinggi_badan.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                    <div class="relative">
+                        {{ form.tinggi_badan(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500") }}
+                        <span class="absolute right-3 top-2 text-slate-400 text-sm">cm</span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                {{ form.aktivitas.label(class="block text-sm font-medium text-slate-700 mb-1") }}
+                {{ form.aktivitas(class="w-full border border-slate-300 rounded-md px-3 py-2 focus:outline-none focus:ring-1 focus:ring-emerald-500 focus:border-emerald-500 bg-white") }}
+            </div>
+
+            <div class="pt-4">
+                <button type="submit" class="w-full py-3 px-4 rounded-md font-bold text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none shadow">
+                    Mulai Analisis
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

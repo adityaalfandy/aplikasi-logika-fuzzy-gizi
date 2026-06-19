@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+
+{% block title %}Beranda - NutriWise AI{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto px-4 py-16 sm:py-24">
+    <div class="text-center">
+        <h1 class="text-4xl font-extrabold text-slate-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
+            Kalkulator Nutrisi AI dengan <span class="text-emerald-600">Logika Fuzzy</span>
+        </h1>
+        <p class="max-w-xl mt-5 mx-auto text-xl text-slate-500">
+            Dapatkan rekomendasi kalori dan makronutrisi harian Anda secara presisi dengan sistem kecerdasan buatan Sugeno Fuzzy Inference System.
+        </p>
+        <div class="mt-8 flex justify-center">
+            <a href="{{ url_for('main.calculator') }}" class="px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-emerald-600 hover:bg-emerald-700 md:py-4 md:text-lg md:px-10 shadow">
+                Coba Kalkulator
+            </a>
+        </div>
+    </div>
+
+    <!-- Features -->
+    <div class="mt-24">
+        <div class="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <!-- Feature 1 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center hover:shadow-md transition">
+                <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-emerald-100 text-emerald-600 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Model Fuzzy Logic</h3>
+                <p class="text-slate-500 text-sm">Menghitung BMI, umur, dan aktivitas fisik dengan derajat keanggotaan untuk hasil yang lebih adaptif dan akurat dibanding rumus statis.</p>
+            </div>
+
+            <!-- Feature 2 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center hover:shadow-md transition">
+                <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-blue-100 text-blue-600 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Personalisasi Penuh</h3>
+                <p class="text-slate-500 text-sm">Mendapatkan target kalori spesifik dan pemecahan makronutrisi yang disesuaikan secara dinamis untuk tubuh Anda.</p>
+            </div>
+
+            <!-- Feature 3 -->
+            <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 text-center hover:shadow-md transition">
+                <div class="w-12 h-12 inline-flex items-center justify-center rounded-full bg-purple-100 text-purple-600 mb-4">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <h3 class="text-lg font-bold text-slate-900 mb-2">Explainable AI (XAI)</h3>
+                <p class="text-slate-500 text-sm">Lihat secara transparan bagaimana sistem AI kami mengambil keputusan dan menghitung bobot nilai dari profil Anda.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
