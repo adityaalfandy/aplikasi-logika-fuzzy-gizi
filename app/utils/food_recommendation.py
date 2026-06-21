@@ -31,7 +31,14 @@ def get_food_recommendations(kalori_harian):
             'camilan': f"Smoothie Pisang + Protein Shake / Roti Lapis (~{camilan_cal} kkal)"
         }
         
+        
     return {
         'kategori': kategori,
-        'menu': menu
+        'menu': menu,
+        'calories': {
+            'sarapan': sarapan_cal,
+            'siang': siang_cal,
+            'malam': malam_cal,
+            'camilan': camilan_cal
+        }
     }

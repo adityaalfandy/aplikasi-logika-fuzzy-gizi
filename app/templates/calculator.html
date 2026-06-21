@@ -4,67 +4,70 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto px-6 sm:px-8 py-16">
-    <div class="mb-12">
-        <h2 class="font-display font-bold text-3xl text-brand-ink mb-2">Input Biometrik</h2>
-        <p class="font-sans text-sm text-slate-500">Masukkan parameter fisik untuk dianalisis oleh Mesin Inferensi Sugeno.</p>
-    </div>
+    <div class="bg-white rounded-3xl p-8 md:p-12 card-shadow max-w-3xl mx-auto">
+        <div class="mb-10 text-center">
+            <h2 class="text-3xl font-bold text-app-darkblue mb-3">Kalkulator Biometrik</h2>
+            <p class="text-sm text-slate-500">Masukkan parameter fisik untuk dianalisis oleh AI NutriWise.</p>
+        </div>
 
-    <form method="POST" action="{{ url_for('main.calculator') }}" class="space-y-8 max-w-2xl">
-        {{ form.hidden_tag() }}
-        
-        {% if not current_user.is_authenticated %}
-        <div class="flex flex-col">
-            {{ form.nama.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-            {{ form.nama(class="input-crisp px-4 py-3 text-sm text-brand-ink", placeholder="e.g. John Doe") }}
-            {% if form.nama.errors %}
-                <p class="text-brand-coral text-xs mt-2">{{ form.nama.errors[0] }}</p>
+        <form method="POST" action="{{ url_for('main.calculator') }}" class="space-y-6">
+            {{ form.hidden_tag() }}
+            
+            {% if not current_user.is_authenticated %}
+            <div class="flex flex-col">
+                {{ form.nama.label(class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2") }}
+                {{ form.nama(class="input-crisp px-4 py-3 text-sm text-app-textDark bg-slate-50", placeholder="e.g. John Doe") }}
+                {% if form.nama.errors %}
+                    <p class="text-red-500 text-xs mt-2">{{ form.nama.errors[0] }}</p>
+                {% endif %}
+            </div>
             {% endif %}
-        </div>
-        {% endif %}
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="flex flex-col">
-                {{ form.umur.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                <div class="relative">
-                    {{ form.umur(class="input-crisp w-full px-4 py-3 text-sm text-brand-ink data-mono", min="10", max="100") }}
-                    <span class="absolute right-4 top-3 font-mono text-xs text-slate-400">YRS</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col">
+                    {{ form.umur.label(class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2") }}
+                    <div class="relative">
+                        {{ form.umur(class="input-crisp w-full px-4 py-3 text-sm text-app-textDark bg-slate-50 font-mono", min="10", max="100") }}
+                        <span class="absolute right-4 top-3 text-xs font-bold text-slate-400">YRS</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col">
+                    {{ form.jenis_kelamin.label(class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2") }}
+                    {{ form.jenis_kelamin(class="input-crisp px-4 py-3 text-sm text-app-textDark bg-slate-50") }}
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="flex flex-col">
+                    {{ form.berat_badan.label(class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2") }}
+                    <div class="relative">
+                        {{ form.berat_badan(class="input-crisp w-full px-4 py-3 text-sm text-app-textDark bg-slate-50 font-mono", step="0.1") }}
+                        <span class="absolute right-4 top-3 text-xs font-bold text-slate-400">KG</span>
+                    </div>
+                </div>
+
+                <div class="flex flex-col">
+                    {{ form.tinggi_badan.label(class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2") }}
+                    <div class="relative">
+                        {{ form.tinggi_badan(class="input-crisp w-full px-4 py-3 text-sm text-app-textDark bg-slate-50 font-mono") }}
+                        <span class="absolute right-4 top-3 text-xs font-bold text-slate-400">CM</span>
+                    </div>
                 </div>
             </div>
 
             <div class="flex flex-col">
-                {{ form.jenis_kelamin.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                {{ form.jenis_kelamin(class="input-crisp px-4 py-3 text-sm text-brand-ink") }}
-            </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <div class="flex flex-col">
-                {{ form.berat_badan.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                <div class="relative">
-                    {{ form.berat_badan(class="input-crisp w-full px-4 py-3 text-sm text-brand-ink data-mono", step="0.1") }}
-                    <span class="absolute right-4 top-3 font-mono text-xs text-slate-400">KG</span>
-                </div>
+                {{ form.aktivitas.label(class="text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2") }}
+                {{ form.aktivitas(class="input-crisp px-4 py-3 text-sm text-app-textDark bg-slate-50") }}
             </div>
 
-            <div class="flex flex-col">
-                {{ form.tinggi_badan.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                <div class="relative">
-                    {{ form.tinggi_badan(class="input-crisp w-full px-4 py-3 text-sm text-brand-ink data-mono") }}
-                    <span class="absolute right-4 top-3 font-mono text-xs text-slate-400">CM</span>
-                </div>
+            <div class="pt-6 mt-6">
+                <button type="submit" class="btn-primary w-full text-lg shadow-lg flex items-center justify-center gap-2 group">
+                    <i data-lucide="cpu" class="w-5 h-5"></i>
+                    Proses Analisis AI
+                </button>
             </div>
-        </div>
-
-        <div class="flex flex-col">
-            {{ form.aktivitas.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-            {{ form.aktivitas(class="input-crisp px-4 py-3 text-sm text-brand-ink") }}
-        </div>
-
-        <div class="pt-6 border-t border-slate-200">
-            <button type="submit" class="btn-primary w-full md:w-auto">
-                Proses Inferensi AI
-            </button>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
 {% endblock %}

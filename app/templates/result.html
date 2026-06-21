@@ -5,200 +5,208 @@
 {% block content %}
 <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
     <!-- Header -->
-    <div class="mb-10 pb-6 hairline-bottom flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+    <div class="mb-10 flex flex-col md:flex-row justify-between items-start md:items-end gap-6 text-white">
         <div>
-            <p class="font-mono text-xs text-slate-500 uppercase tracking-widest mb-2">Subject: {{ data.nama }}</p>
-            <h2 class="font-display font-bold text-3xl text-brand-ink">Laporan Evaluasi Nutrisi</h2>
+            <p class="text-sm uppercase tracking-widest mb-2 opacity-80">Subject: {{ data.nama }}</p>
+            <h2 class="text-4xl font-bold">Laporan Evaluasi Nutrisi</h2>
         </div>
-        <a href="{{ url_for('main.calculator') }}" class="font-mono text-xs text-brand-blue hover:text-brand-ink transition-colors uppercase tracking-widest">
-            [ Hitung Ulang ]
+        <a href="{{ url_for('main.calculator', new=1) }}" class="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg font-semibold transition-colors flex items-center gap-2">
+            <i data-lucide="refresh-cw" class="w-4 h-4"></i> Hitung Ulang
         </a>
     </div>
 
     <!-- Data Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-10 mb-16">
-        
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
         <!-- Standard Metrics -->
-        <div class="col-span-1 lg:col-span-2 grid grid-cols-2 gap-8">
-            <div>
-                <p class="font-mono text-xs text-slate-500 uppercase tracking-wider mb-2">BMI Index</p>
-                <div class="flex items-baseline gap-2">
-                    <span class="data-mono text-3xl text-brand-ink">{{ data.bmi }}</span>
-                    <span class="font-mono text-[10px] uppercase px-2 py-0.5 hairline-border 
-                        {% if data.status_bmi == 'Normal' %} text-green-600 bg-green-50 border-green-200 
-                        {% elif data.status_bmi == 'Underweight' %} text-yellow-600 bg-yellow-50 border-yellow-200 
-                        {% else %} text-red-600 bg-red-50 border-red-200 {% endif %}">
-                        {{ data.status_bmi }}
-                    </span>
-                </div>
+        <div class="bg-white rounded-3xl p-6 card-shadow flex flex-col justify-center">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">BMI Index</p>
+            <div class="flex items-center gap-3">
+                <span class="text-4xl font-bold text-app-textDark">{{ data.bmi }}</span>
+                <span class="text-xs font-bold uppercase px-3 py-1 rounded-full 
+                    {% if data.status_bmi == 'Normal' %} text-green-700 bg-green-100 
+                    {% elif data.status_bmi == 'Underweight' %} text-yellow-700 bg-yellow-100 
+                    {% else %} text-red-700 bg-red-100 {% endif %}">
+                    {{ data.status_bmi }}
+                </span>
             </div>
-            
-            <div>
-                <p class="font-mono text-xs text-slate-500 uppercase tracking-wider mb-2">Berat Ideal</p>
-                <p class="data-mono text-3xl text-brand-ink">{{ data.berat_ideal }} <span class="text-sm text-slate-400">kg</span></p>
-            </div>
-            
-            <div class="col-span-2 pt-6 hairline-top">
-                <p class="font-mono text-xs text-slate-500 uppercase tracking-wider mb-2">Kalori Dasar (Statis)</p>
-                <p class="data-mono text-xl text-slate-600">{{ data.kalori_tdee }} <span class="text-sm">kkal</span></p>
-                <p class="font-sans text-xs text-slate-400 mt-1">Estimasi Mifflin-St Jeor</p>
-            </div>
+        </div>
+        
+        <div class="bg-white rounded-3xl p-6 card-shadow flex flex-col justify-center">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Berat Ideal</p>
+            <p class="text-4xl font-bold text-app-textDark">{{ data.berat_ideal }} <span class="text-lg text-slate-400 font-medium">kg</span></p>
+        </div>
+        
+        <div class="bg-white rounded-3xl p-6 card-shadow flex flex-col justify-center">
+            <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Kalori Dasar (Statis)</p>
+            <p class="text-3xl font-bold text-slate-600">{{ data.kalori_tdee }} <span class="text-lg font-medium">kkal</span></p>
+            <p class="text-xs text-slate-400 mt-1">Estimasi Mifflin-St Jeor</p>
         </div>
 
         <!-- Fuzzy Highlight -->
-        <div class="col-span-1 lg:col-span-2 bg-brand-ink text-white p-8 hairline-border flex flex-col justify-center relative overflow-hidden">
-            <!-- Decorative Accent -->
-            <div class="absolute top-0 right-0 w-2 h-full bg-brand-coral"></div>
-            
-            <p class="font-mono text-xs text-slate-400 uppercase tracking-widest mb-4 flex items-center">
-                <span class="w-2 h-2 bg-brand-coral mr-3"></span>
-                Target Adaptif (Fuzzy AI)
+        <div class="bg-app-darkblue text-white rounded-3xl p-6 card-shadow flex flex-col justify-center relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-white/10 rounded-bl-full -z-0"></div>
+            <p class="text-xs text-white/80 uppercase tracking-widest mb-3 flex items-center gap-2 z-10">
+                <i data-lucide="sparkles" class="w-4 h-4 text-yellow-400"></i> Target AI (Fuzzy)
             </p>
-            <p class="data-mono text-5xl md:text-6xl text-white mb-2 tracking-tight">{{ data.kalori_fuzzy }} <span class="text-xl text-slate-400 font-sans">kkal</span></p>
-            <p class="font-sans text-sm text-slate-300">Hasil inferensi Sugeno dari persilangan BMI, Umur, dan Aktivitas Fisik.</p>
+            <p class="text-5xl font-bold text-white mb-1 z-10">{{ data.kalori_fuzzy }} <span class="text-xl text-white/70 font-medium">kkal</span></p>
         </div>
     </div>
 
     <!-- Macros & Menu -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16 pt-12 hairline-top">
-        
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-12">
         <!-- Macros -->
-        <div>
-            <h3 class="font-display font-semibold text-xl text-brand-ink mb-6">Distribusi Makronutrien</h3>
+        <div class="lg:col-span-5 bg-white rounded-3xl p-8 card-shadow">
+            <h3 class="text-xl font-bold text-app-textDark mb-6">Distribusi Makronutrien</h3>
             <div class="space-y-6">
-                <!-- Carbs -->
                 <div>
                     <div class="flex justify-between items-end mb-2">
-                        <span class="font-mono text-xs uppercase tracking-wider text-slate-500">Karbohidrat (50%)</span>
-                        <span class="data-mono text-lg text-brand-ink">{{ data.karbo_g }}g</span>
+                        <span class="text-sm font-semibold text-slate-600">Karbohidrat (50%)</span>
+                        <span class="text-xl font-bold text-app-green">{{ data.karbo_g }}g</span>
                     </div>
-                    <div class="h-1 w-full bg-slate-100"><div class="h-1 bg-brand-blue" style="width: 50%"></div></div>
+                    <div class="h-2.5 w-full bg-slate-100 rounded-full"><div class="h-2.5 bg-app-green rounded-full" style="width: 50%"></div></div>
                 </div>
-                <!-- Protein -->
                 <div>
                     <div class="flex justify-between items-end mb-2">
-                        <span class="font-mono text-xs uppercase tracking-wider text-slate-500">Protein (20%)</span>
-                        <span class="data-mono text-lg text-brand-ink">{{ data.protein_g }}g</span>
+                        <span class="text-sm font-semibold text-slate-600">Protein (20%)</span>
+                        <span class="text-xl font-bold text-blue-500">{{ data.protein_g }}g</span>
                     </div>
-                    <div class="h-1 w-full bg-slate-100"><div class="h-1 bg-brand-ink" style="width: 20%"></div></div>
+                    <div class="h-2.5 w-full bg-slate-100 rounded-full"><div class="h-2.5 bg-blue-500 rounded-full" style="width: 20%"></div></div>
                 </div>
-                <!-- Fat -->
                 <div>
                     <div class="flex justify-between items-end mb-2">
-                        <span class="font-mono text-xs uppercase tracking-wider text-slate-500">Lemak (30%)</span>
-                        <span class="data-mono text-lg text-brand-ink">{{ data.lemak_g }}g</span>
+                        <span class="text-sm font-semibold text-slate-600">Lemak (30%)</span>
+                        <span class="text-xl font-bold text-app-orange">{{ data.lemak_g }}g</span>
                     </div>
-                    <div class="h-1 w-full bg-slate-100"><div class="h-1 bg-slate-400" style="width: 30%"></div></div>
+                    <div class="h-2.5 w-full bg-slate-100 rounded-full"><div class="h-2.5 bg-app-orange rounded-full" style="width: 30%"></div></div>
                 </div>
             </div>
         </div>
 
         <!-- Menu Proposal -->
-        <div>
+        <div class="lg:col-span-7 bg-white rounded-3xl p-8 card-shadow">
             <div class="flex items-center justify-between mb-6">
-                <h3 class="font-display font-semibold text-xl text-brand-ink">Proposal Menu Harian</h3>
-                <span class="font-mono text-[10px] uppercase tracking-widest px-2 py-1 bg-slate-100 text-slate-600 hairline-border">{{ data.rekomendasi_menu.kategori }}</span>
+                <h3 class="text-xl font-bold text-app-textDark">Proposal Menu Harian</h3>
+                <span class="text-xs font-bold uppercase tracking-widest px-3 py-1.5 bg-app-darkblue text-white rounded-lg">{{ data.rekomendasi_menu.kategori }}</span>
             </div>
             
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div class="p-4 hairline-border bg-white">
-                    <p class="font-mono text-[10px] text-slate-400 uppercase tracking-widest mb-2">Sarapan (25%)</p>
-                    <p class="font-sans text-sm text-slate-700 leading-relaxed">{{ data.rekomendasi_menu.menu.sarapan }}</p>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-app-orange text-white rounded-2xl p-5 shadow-md flex flex-col justify-between">
+                    <p class="text-xs font-bold uppercase tracking-widest mb-3 opacity-90">Sarapan (25%)</p>
+                    <p class="text-sm font-medium leading-relaxed">{{ data.rekomendasi_menu.menu.sarapan }}</p>
                 </div>
-                <div class="p-4 hairline-border bg-white">
-                    <p class="font-mono text-[10px] text-slate-400 uppercase tracking-widest mb-2">Makan Siang (35%)</p>
-                    <p class="font-sans text-sm text-slate-700 leading-relaxed">{{ data.rekomendasi_menu.menu.siang }}</p>
+                <div class="bg-app-red text-white rounded-2xl p-5 shadow-md flex flex-col justify-between">
+                    <p class="text-xs font-bold uppercase tracking-widest mb-3 opacity-90">Makan Siang (35%)</p>
+                    <p class="text-sm font-medium leading-relaxed">{{ data.rekomendasi_menu.menu.siang }}</p>
                 </div>
-                <div class="p-4 hairline-border bg-white">
-                    <p class="font-mono text-[10px] text-slate-400 uppercase tracking-widest mb-2">Makan Malam (25%)</p>
-                    <p class="font-sans text-sm text-slate-700 leading-relaxed">{{ data.rekomendasi_menu.menu.malam }}</p>
+                <div class="bg-app-slate text-white rounded-2xl p-5 shadow-md flex flex-col justify-between">
+                    <p class="text-xs font-bold uppercase tracking-widest mb-3 opacity-90">Makan Malam (25%)</p>
+                    <p class="text-sm font-medium leading-relaxed">{{ data.rekomendasi_menu.menu.malam }}</p>
                 </div>
-                <div class="p-4 hairline-border bg-white">
-                    <p class="font-mono text-[10px] text-slate-400 uppercase tracking-widest mb-2">Camilan (15%)</p>
-                    <p class="font-sans text-sm text-slate-700 leading-relaxed">{{ data.rekomendasi_menu.menu.camilan }}</p>
+                <div class="bg-app-darkblue text-white rounded-2xl p-5 shadow-md flex flex-col justify-between">
+                    <p class="text-xs font-bold uppercase tracking-widest mb-3 opacity-90">Camilan (15%)</p>
+                    <p class="text-sm font-medium leading-relaxed">{{ data.rekomendasi_menu.menu.camilan }}</p>
                 </div>
             </div>
         </div>
-
     </div>
 
     <!-- Explainable AI (XAI) Panel -->
-    <div class="hairline-border bg-white mb-12">
-        <button id="xai-toggle" class="w-full px-6 py-4 flex justify-between items-center bg-slate-50 hover:bg-slate-100 transition-colors focus:outline-none">
-            <span class="font-mono text-sm uppercase tracking-widest text-brand-ink flex items-center">
-                <svg class="w-4 h-4 mr-3 text-brand-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                Log Inferensi (XAI)
+    <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-12">
+        <button id="xai-toggle" class="w-full px-8 py-6 flex justify-between items-center hover:bg-slate-50 transition-colors focus:outline-none">
+            <span class="font-bold text-lg text-app-darkblue flex items-center gap-3">
+                <i data-lucide="network" class="w-5 h-5 text-app-bg"></i>
+                Log Inferensi (Explainable AI)
             </span>
-            <svg id="xai-icon" class="w-4 h-4 text-slate-400 transform transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            <i data-lucide="chevron-down" id="xai-icon" class="w-5 h-5 text-slate-400 transform transition-transform"></i>
         </button>
         
-        <div id="xai-content" class="hidden p-6 md:p-8 hairline-top bg-white">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-                
-                <!-- Derajat Keanggotaan -->
-                <div class="lg:col-span-4">
-                    <h4 class="font-mono text-xs uppercase tracking-widest text-slate-500 mb-6">1. Fuzzifikasi Parameter</h4>
+        <div id="xai-content" class="hidden p-8 border-t border-slate-100 bg-slate-50">
+            <!-- Intro Penjelasan -->
+            <div class="bg-blue-50 border border-blue-100 rounded-2xl p-5 mb-8 text-sm text-blue-900 flex gap-4 shadow-sm">
+                <i data-lucide="info" class="w-6 h-6 text-app-blue shrink-0 mt-0.5"></i>
+                <div>
+                    <p class="font-bold mb-1">Bagaimana AI Menghitung Kalori Anda?</p>
+                    <p class="leading-relaxed opacity-90">Logika Fuzzy tidak melihat data secara hitam-putih. Alih-alih menggolongkan Anda secara kaku (misalnya: hanya "Tua" atau "Muda"), AI kami menghitung seberapa besar *persentase* Anda berada di setiap kategori, lalu menggabungkannya dengan puluhan aturan gizi untuk mendapatkan angka kalori yang sangat personal.</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <!-- Tahap 1: Fuzzifikasi -->
+                <div class="lg:col-span-4 flex flex-col h-full">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-2">1. Pemetaan Data (Fuzzifikasi)</h4>
+                    <p class="text-xs text-slate-500 mb-5">Menerjemahkan angka mentah Anda menjadi persentase kategori (Derajat Keanggotaan).</p>
                     
-                    <div class="space-y-6">
+                    <div class="space-y-4 flex-1">
                         <!-- BMI -->
-                        <div>
-                            <p class="font-sans text-sm font-semibold text-brand-ink mb-2">BMI Input: <span class="data-mono">{{ data.bmi }}</span></p>
-                            <div class="space-y-1">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                            <p class="text-sm font-bold text-app-textDark mb-3">Kondisi Fisik (BMI): <span class="text-app-bg">{{ data.bmi }}</span></p>
+                            <div class="space-y-2">
                                 {% for k, v in data.fuzzy_detail.membership.bmi.items() %}
                                 <div class="flex justify-between items-center text-xs">
-                                    <span class="font-mono text-slate-500 capitalize">{{ k }}</span>
-                                    <span class="data-mono text-brand-ink">{{ v }}</span>
+                                    <span class="text-slate-500 font-semibold capitalize">{{ k }}</span>
+                                    <span class="text-app-textDark font-bold">{{ (v * 100)|round(1) }}%</span>
                                 </div>
-                                <div class="w-full bg-slate-100 h-1"><div class="bg-brand-blue h-1" style="width: {{ v * 100 }}%"></div></div>
+                                <div class="w-full bg-slate-100 h-1.5 rounded-full"><div class="bg-app-bg h-1.5 rounded-full" style="width: {{ v * 100 }}%"></div></div>
                                 {% endfor %}
                             </div>
                         </div>
                         
                         <!-- Aktivitas -->
-                        <div>
-                            <p class="font-sans text-sm font-semibold text-brand-ink mb-2">Faktor Aktivitas: <span class="data-mono">{{ data.aktivitas_val }}</span></p>
-                            <div class="space-y-1">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                            <p class="text-sm font-bold text-app-textDark mb-3">Tingkat Aktivitas: <span class="text-app-green">{{ data.aktivitas_val }}</span></p>
+                            <div class="space-y-2">
                                 {% for k, v in data.fuzzy_detail.membership.aktivitas.items() %}
                                 <div class="flex justify-between items-center text-xs">
-                                    <span class="font-mono text-slate-500 capitalize">{{ k }}</span>
-                                    <span class="data-mono text-brand-ink">{{ v }}</span>
+                                    <span class="text-slate-500 font-semibold capitalize">{{ k }}</span>
+                                    <span class="text-app-textDark font-bold">{{ (v * 100)|round(1) }}%</span>
                                 </div>
-                                <div class="w-full bg-slate-100 h-1"><div class="bg-brand-ink h-1" style="width: {{ v * 100 }}%"></div></div>
+                                <div class="w-full bg-slate-100 h-1.5 rounded-full"><div class="bg-app-green h-1.5 rounded-full" style="width: {{ v * 100 }}%"></div></div>
                                 {% endfor %}
                             </div>
                         </div>
 
                         <!-- Umur -->
-                        <div>
-                            <p class="font-sans text-sm font-semibold text-brand-ink mb-2">Umur: <span class="data-mono">{{ data.umur }}</span></p>
-                            <div class="space-y-1">
+                        <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                            <p class="text-sm font-bold text-app-textDark mb-3">Kategori Umur: <span class="text-app-orange">{{ data.umur }} Tahun</span></p>
+                            <div class="space-y-2">
                                 {% for k, v in data.fuzzy_detail.membership.umur.items() %}
                                 <div class="flex justify-between items-center text-xs">
-                                    <span class="font-mono text-slate-500 capitalize">{{ k }}</span>
-                                    <span class="data-mono text-brand-ink">{{ v }}</span>
+                                    <span class="text-slate-500 font-semibold capitalize">{{ k }}</span>
+                                    <span class="text-app-textDark font-bold">{{ (v * 100)|round(1) }}%</span>
                                 </div>
-                                <div class="w-full bg-slate-100 h-1"><div class="bg-slate-400 h-1" style="width: {{ v * 100 }}%"></div></div>
+                                <div class="w-full bg-slate-100 h-1.5 rounded-full"><div class="bg-app-orange h-1.5 rounded-full" style="width: {{ v * 100 }}%"></div></div>
                                 {% endfor %}
                             </div>
                         </div>
                     </div>
                 </div>
                 
-                <!-- Inferensi Chart -->
-                <div class="lg:col-span-8">
-                    <h4 class="font-mono text-xs uppercase tracking-widest text-slate-500 mb-6">2. Defuzzifikasi Weighted Average</h4>
+                <!-- Tahap 2 & 3: Inferensi & Defuzzifikasi -->
+                <div class="lg:col-span-8 flex flex-col h-full">
+                    <h4 class="text-sm font-bold uppercase tracking-widest text-slate-500 mb-2">2. Penggabungan Aturan & Hasil (Defuzzifikasi)</h4>
+                    <p class="text-xs text-slate-500 mb-5">AI mencocokkan persentase di atas dengan aturan medis, lalu merata-ratakannya untuk mendapat 1 angka pasti.</p>
                     
-                    <div class="relative h-64 w-full mb-6 hairline-border p-4 bg-slate-50">
-                        <canvas id="fuzzyChart"></canvas>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-100 mb-4 flex-1 flex flex-col">
+                        <div class="flex items-center gap-4 mb-4 text-xs font-semibold text-slate-500 bg-slate-50 p-3 rounded-lg">
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded bg-[#7A9BDE]"></div> Bobot Kecocokan Aturan (Alpha)</div>
+                            <div class="flex items-center gap-2"><div class="w-3 h-0.5 bg-[#1E3A8A]"></div> Target Kalori per Aturan (Z)</div>
+                        </div>
+                        <div class="relative w-full flex-1 min-h-[200px]">
+                            <canvas id="fuzzyChart"></canvas>
+                        </div>
                     </div>
                     
-                    <div class="bg-brand-ink text-white p-4 font-mono text-xs overflow-x-auto">
-                        <p class="text-slate-400 mb-2"># Formula Defuzzifikasi Sugeno:</p>
-                        <p class="whitespace-nowrap">> Z = &Sigma;(Alpha * Z_Rule) / &Sigma;Alpha</p>
-                        <p class="whitespace-nowrap">> Z = {{ data.kalori_fuzzy }}</p>
+                    <div class="bg-app-darkblue text-white rounded-xl p-5 shadow-inner flex flex-col sm:flex-row justify-between items-center gap-4">
+                        <div>
+                            <p class="text-white/70 text-xs mb-1 uppercase tracking-wider font-bold">Kalkulasi Akhir (Metode Sugeno)</p>
+                            <p class="text-sm opacity-90">Rata-rata dari semua aturan yang cocok</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-white/50 mb-1 font-mono">Z = &Sigma;(Alpha * Z) / &Sigma;Alpha</p>
+                            <p class="text-3xl font-bold text-app-green">{{ data.kalori_fuzzy }} <span class="text-sm text-white/70 font-medium">Kcal</span></p>
+                        </div>
                     </div>
                 </div>
-                
             </div>
         </div>
     </div>
@@ -227,27 +235,33 @@
     const fuzzyData = {{ fuzzy_json|safe }};
 
     function initChart() {
+        Chart.defaults.font.family = 'Poppins';
         const ctx = document.getElementById('fuzzyChart').getContext('2d');
-        const activeRules = fuzzyData.rules.filter(r => r.alpha > 0);
         
+        // Use fired_rules and map weight/output
+        const activeRules = fuzzyData.fired_rules || [];
+        
+        if (activeRules.length === 0) return; // Prevent rendering if no rules
+
         new Chart(ctx, {
             type: 'bar',
             data: {
-                labels: activeRules.map((_, i) => 'R' + (i+1)),
+                labels: activeRules.map(r => 'R' + r.id),
                 datasets: [
                     {
                         label: 'Bobot Alpha (α)',
-                        data: activeRules.map(r => r.alpha),
-                        backgroundColor: '#2563EB',
+                        data: activeRules.map(r => r.weight),
+                        backgroundColor: '#7A9BDE',
                         yAxisID: 'y',
-                        barPercentage: 0.5
+                        barPercentage: 0.5,
+                        borderRadius: 4
                     },
                     {
-                        label: 'Z (Output Kalori)',
-                        data: activeRules.map(r => r.z),
+                        label: 'Target Kalori per Aturan (Z)',
+                        data: activeRules.map(r => r.output),
                         type: 'line',
-                        borderColor: '#0F172A',
-                        backgroundColor: '#0F172A',
+                        borderColor: '#1E3A8A',
+                        backgroundColor: '#1E3A8A',
                         borderWidth: 2,
                         pointRadius: 4,
                         yAxisID: 'y1'
@@ -258,35 +272,22 @@
                 responsive: true,
                 maintainAspectRatio: false,
                 plugins: {
-                    legend: { labels: { font: { family: 'Inter', size: 11 } } },
+                    legend: { display: false },
                     tooltip: {
                         callbacks: {
                             afterLabel: function(context) {
                                 if (context.datasetIndex === 0) {
                                     const rule = activeRules[context.dataIndex];
-                                    return `IF BMI ${rule.rule.bmi} AND Akt ${rule.rule.aktivitas} AND Umur ${rule.rule.umur}`;
+                                    return rule.desc;
                                 }
                             }
                         }
                     }
                 },
                 scales: {
-                    x: { 
-                        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
-                        grid: { display: false }
-                    },
-                    y: {
-                        type: 'linear', position: 'left',
-                        title: { display: true, text: 'Alpha (α)', font: { family: 'Inter', size: 11 } },
-                        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
-                        min: 0, max: 1
-                    },
-                    y1: {
-                        type: 'linear', position: 'right',
-                        title: { display: true, text: 'Z (kkal)', font: { family: 'Inter', size: 11 } },
-                        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
-                        grid: { drawOnChartArea: false }
-                    }
+                    x: { grid: { display: false } },
+                    y: { type: 'linear', position: 'left', title: { display: true, text: 'Bobot (α)' }, min: 0, max: 1 },
+                    y1: { type: 'linear', position: 'right', title: { display: true, text: 'Kalori (Z)' }, grid: { drawOnChartArea: false } }
                 }
             }
         });

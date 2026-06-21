@@ -12,7 +12,36 @@ def index():
 
 @main.route('/calculator', methods=['GET', 'POST'])
 def calculator():
+    if request.method == 'GET' and not request.args.get('new'):
+        if 'result_data' in session:
+            flash("Menampilkan hasil perhitungan terakhir Anda. Klik 'Hitung Ulang' jika ingin mengubah data.", "info")
+            return redirect(url_for('main.result'))
+            
     form = CalculatorForm()
+    
+    if request.method == 'GET':
+        from flask_login import current_user
+        from app.models.health_profile import HealthProfile
+        if current_user.is_authenticated:
+            latest_profile = HealthProfile.query.filter_by(user_id=current_user.id).order_by(HealthProfile.created_at.desc()).first()
+            if latest_profile:
+                form.nama.data = current_user.nama
+                form.umur.data = latest_profile.umur
+                form.jenis_kelamin.data = latest_profile.jenis_kelamin
+                form.berat_badan.data = float(latest_profile.berat_badan)
+                form.tinggi_badan.data = latest_profile.tinggi_badan
+                form.aktivitas.data = latest_profile.aktivitas
+            else:
+                form.nama.data = current_user.nama
+        elif 'result_data' in session:
+            rd = session['result_data']
+            form.nama.data = rd.get('nama')
+            form.umur.data = rd.get('umur')
+            form.jenis_kelamin.data = rd.get('jenis_kelamin')
+            form.berat_badan.data = rd.get('berat_badan')
+            form.tinggi_badan.data = rd.get('tinggi_badan')
+            form.aktivitas.data = rd.get('aktivitas')
+
     if form.validate_on_submit():
         from flask_login import current_user
         if current_user.is_authenticated:

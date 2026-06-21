@@ -1,207 +1,401 @@
 {% extends "base.html" %}
 
-{% block title %}Progress Dashboard - NutriWise AI{% endblock %}
+{% block title %}NutriWise Dashboard{% endblock %}
 
 {% block content %}
 <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
-    <!-- Header -->
-    <div class="mb-12 pb-6 hairline-bottom flex justify-between items-end">
-        <div>
-            <p class="font-mono text-xs text-slate-500 uppercase tracking-widest mb-2">Monitor</p>
-            <h2 class="font-display font-bold text-3xl text-brand-ink">Progress Tracker</h2>
+    <!-- Page Title & Date Controller -->
+    <div class="flex justify-between items-center mb-8 text-white">
+        <h2 class="text-3xl font-bold">Dashboard Harian</h2>
+        <div class="flex items-center gap-2">
+            <a href="{{ url_for('progress.dashboard', date=prev_date.strftime('%Y-%m-%d')) }}" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition">
+                <i data-lucide="chevron-left" class="w-4 h-4"></i>
+            </a>
+            <div class="bg-app-darkblue/40 px-4 py-1.5 rounded-md flex items-center gap-2 text-xs font-semibold tracking-wider">
+                <i data-lucide="calendar" class="w-4 h-4"></i> 
+                <span>{{ date_label }}</span>
+            </div>
+            <a href="{{ url_for('progress.dashboard', date=next_date.strftime('%Y-%m-%d')) }}" class="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition">
+                <i data-lucide="chevron-right" class="w-4 h-4"></i>
+            </a>
         </div>
-        <a href="{{ url_for('report.export_pdf') }}" class="btn-primary text-sm flex items-center group">
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-            Export PDF
-        </a>
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
-        
-        <!-- Form Catat Progress -->
-        <div class="lg:col-span-4">
-            <h3 class="font-display font-semibold text-xl text-brand-ink mb-6">Log Harian</h3>
-            <div class="hairline-border bg-white p-6 md:p-8">
-                <form method="POST" action="{{ url_for('progress.dashboard') }}" class="space-y-6">
-                    {{ form.hidden_tag() }}
-                    
-                    <div class="flex flex-col">
-                        {{ form.tanggal.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                        {{ form.tanggal(class="input-crisp px-4 py-2 text-sm text-brand-ink data-mono", type="date") }}
-                    </div>
-                    
-                    <div class="flex flex-col">
-                        {{ form.berat_badan.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                        <div class="relative">
-                            {{ form.berat_badan(class="input-crisp w-full px-4 py-2 text-sm text-brand-ink data-mono", step="0.1") }}
-                            <span class="absolute right-4 top-2.5 font-mono text-xs text-slate-400">KG</span>
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 pb-12">
+        <!-- LEFT COLUMN -->
+        <div class="lg:col-span-5 space-y-6 flex flex-col">
+            <!-- Rekomendasi Hari Ini (Donut) -->
+            <div class="bg-white rounded-2xl p-6 card-shadow flex-1">
+                <h3 class="text-lg font-bold text-app-textDark mb-4 uppercase tracking-wide">Rekomendasi Hari Ini :</h3>
+                <div class="flex items-center gap-6">
+                    <!-- Chart -->
+                    <div class="relative w-36 h-36">
+                        <canvas id="macroDonut"></canvas>
+                        <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+                            <span class="text-2xl font-bold text-app-darkblue leading-none">{% if metrics.selected_total > 0 %}{{ metrics.selected_total }}{% else %}0{% endif %}</span>
+                            <span class="text-xs text-slate-500 font-medium">{{ metrics.selected_target }} kcal</span>
                         </div>
                     </div>
                     
-                    <div class="flex flex-col">
-                        {{ form.kalori_aktual.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                        <div class="relative">
-                            {{ form.kalori_aktual(class="input-crisp w-full px-4 py-2 text-sm text-brand-ink data-mono") }}
-                            <span class="absolute right-4 top-2.5 font-mono text-xs text-slate-400">KCAL</span>
-                        </div>
-                    </div>
-                    
-                    <div class="flex flex-col">
-                        {{ form.catatan.label(class="font-mono text-xs uppercase tracking-wider text-slate-500 mb-2") }}
-                        {{ form.catatan(class="input-crisp px-4 py-2 text-sm text-brand-ink", rows="2") }}
-                    </div>
-                    
-                    <div class="pt-4 border-t border-slate-200">
-                        <button type="submit" class="btn-primary w-full text-sm">
-                            Simpan Log
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Charts & Logs -->
-        <div class="lg:col-span-8 space-y-12">
-            <!-- Charts -->
-            <div>
-                <h3 class="font-display font-semibold text-xl text-brand-ink mb-6">Grafik Tren</h3>
-                <div class="hairline-border bg-white p-6">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Legends -->
+                    <div class="flex-1 space-y-4">
+                        {% set target_kalori = metrics.selected_target %}
+                        {% set percent = (metrics.selected_total / target_kalori * 100) if target_kalori > 0 else 0 %}
+                        {% set percent = 100 if percent > 100 else percent %}
+                        
+                        {% set karbo = metrics.selected_karbo %}
+                        {% set protein = metrics.selected_protein %}
+                        {% set lemak = metrics.selected_lemak %}
+                        
+                        {% set konsumsi_karbo = (karbo * (metrics.selected_total / target_kalori)) | round(1) if target_kalori > 0 else 0 %}
+                        {% set konsumsi_protein = (protein * (metrics.selected_total / target_kalori)) | round(1) if target_kalori > 0 else 0 %}
+                        {% set konsumsi_lemak = (lemak * (metrics.selected_total / target_kalori)) | round(1) if target_kalori > 0 else 0 %}
+                        
                         <div>
-                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-500 mb-4 border-l-2 border-brand-blue pl-2">Trend Berat Badan</p>
-                            <div class="relative h-48 w-full">
-                                <canvas id="weightChart"></canvas>
+                            <div class="flex justify-between text-xs font-medium mb-1">
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-app-green"></div><span class="text-app-textDark">Karbo</span></div>
+                                <span class="text-app-textDark">{{ konsumsi_karbo }}g <span class="text-slate-400 font-normal">/ {{ karbo }}g</span></span>
                             </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2"><div class="bg-app-green h-2 rounded-full" style="width: {{ percent }}%"></div></div>
                         </div>
                         <div>
-                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-500 mb-4 border-l-2 border-brand-ink pl-2">Konsumsi vs Target</p>
-                            <div class="relative h-48 w-full">
-                                <canvas id="calorieChart"></canvas>
+                            <div class="flex justify-between text-xs font-medium mb-1">
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-blue-400"></div><span class="text-app-textDark">Protein</span></div>
+                                <span class="text-app-textDark">{{ konsumsi_protein }}g <span class="text-slate-400 font-normal">/ {{ protein }}g</span></span>
                             </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2"><div class="bg-blue-400 h-2 rounded-full" style="width: {{ percent }}%"></div></div>
+                        </div>
+                        <div>
+                            <div class="flex justify-between text-xs font-medium mb-1">
+                                <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-app-orange"></div><span class="text-app-textDark">Lemak</span></div>
+                                <span class="text-app-textDark">{{ konsumsi_lemak }}g <span class="text-slate-400 font-normal">/ {{ lemak }}g</span></span>
+                            </div>
+                            <div class="w-full bg-slate-100 rounded-full h-2"><div class="bg-app-orange h-2 rounded-full" style="width: {{ percent }}%"></div></div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- History Table -->
-            <div>
-                <h3 class="font-display font-semibold text-xl text-brand-ink mb-6">Riwayat Rekaman</h3>
-                <div class="hairline-border bg-white overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full divide-y divide-slate-200">
-                            <thead class="bg-slate-50">
-                                <tr>
-                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Tanggal</th>
-                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Berat</th>
-                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Aktual</th>
-                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Target AI</th>
-                                    <th class="px-6 py-3 text-left font-mono text-[10px] text-slate-500 uppercase tracking-widest">Status</th>
+            <!-- Daily Tracking Table -->
+            <div class="bg-white rounded-2xl p-6 card-shadow flex-1">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-bold text-app-textDark">Daily Tracking</h3>
+                    <button onclick="document.getElementById('manualLogModal').classList.remove('hidden')" class="w-6 h-6 rounded-full bg-app-darkblue text-white flex items-center justify-center hover:bg-blue-800 transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                
+                <div class="flex gap-4">
+                    <!-- Table -->
+                    <div class="flex-1 overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead>
+                                <tr class="text-app-textDark font-bold border-b-2 border-slate-100">
+                                    <th class="pb-2">Time</th>
+                                    <th class="pb-2">Meal Name</th>
+                                    <th class="pb-2">Calorie</th>
                                 </tr>
                             </thead>
-                            <tbody class="bg-white divide-y divide-slate-200">
-                                {% for log in logs %}
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-brand-ink">{{ log.tanggal.strftime('%d %b %y') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-brand-ink">{{ log.berat_badan }} kg</td>
-                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-brand-ink">{{ log.kalori_aktual }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap data-mono text-sm text-slate-500">{{ log.target_kalori }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        {% if log.kalori_aktual > log.target_kalori %}
-                                            <span class="font-mono text-[10px] uppercase px-2 py-0.5 hairline-border text-red-600 bg-red-50 border-red-200">Surplus</span>
-                                        {% else %}
-                                            <span class="font-mono text-[10px] uppercase px-2 py-0.5 hairline-border text-green-600 bg-green-50 border-green-200">Defisit</span>
-                                        {% endif %}
-                                    </td>
+                            <tbody>
+                                {% for log in logs[:4] %}
+                                <tr class="border-b border-slate-50 {% if loop.index0 % 2 == 0 %}bg-blue-50/50{% endif %}">
+                                    <td class="py-3 text-slate-500 font-medium">{{ log.tanggal.strftime('%d %b') }}</td>
+                                    <td class="py-3 text-app-textDark font-medium">{{ log.catatan or 'Meal Log' }}</td>
+                                    <td class="py-3 text-app-textDark font-semibold">{{ log.kalori_aktual }} Kcal</td>
                                 </tr>
                                 {% else %}
-                                <tr>
-                                    <td colspan="5" class="px-6 py-8 text-center font-mono text-xs text-slate-400 uppercase tracking-widest">Null (0 logs)</td>
-                                </tr>
+                                <tr><td colspan="3" class="py-4 text-center text-slate-400">Belum ada data</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>
+                    </div>
+                    
+                    <!-- Mini Chart Green -->
+                    <div class="w-32 bg-green-500 rounded-xl p-3 text-white flex flex-col justify-between shadow-inner">
+                        <div>
+                            <span class="text-xs font-semibold">Target</span>
+                            <div class="relative h-16 w-full mt-2">
+                                <canvas id="miniTargetChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="text-[9px] font-medium leading-tight mt-3 space-y-1">
+                            <div class="flex justify-between"><span>Rata-rata Harian</span> <span class="font-bold">{{ metrics.avg_daily }} Kcal</span></div>
+                            <div class="flex justify-between"><span>Total Mingguan</span> <span class="font-bold">{{ metrics.total_weekly }} Kcal</span></div>
+                            <div class="flex justify-between"><span>Target Tercapai</span> <span class="font-bold">{{ metrics.target_achieved }}/{{ metrics.total_days }} Hari</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex justify-center mt-4">
+                    <button onclick="document.getElementById('manualLogModal').classList.remove('hidden')" class="w-8 h-8 rounded-full bg-app-darkblue text-white flex items-center justify-center hover:bg-blue-800 transition shadow-md">
+                        <i data-lucide="plus" class="w-5 h-5"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT COLUMN -->
+        <div class="lg:col-span-7 space-y-6 flex flex-col">
+            <!-- Top 4 Summary Cards -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-white rounded-xl p-4 card-shadow text-center flex flex-col justify-center">
+                    <span class="text-xs text-slate-500 font-medium mb-1">Average Daily Kcal:</span>
+                    <span class="text-2xl font-bold text-app-textDark">{{ metrics.avg_daily }}</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 card-shadow text-center flex flex-col justify-center">
+                    <span class="text-xs text-slate-500 font-medium mb-1">Total Weekly Kcal:</span>
+                    <span class="text-2xl font-bold text-app-textDark">{{ metrics.total_weekly }}</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 card-shadow text-center flex flex-col justify-center">
+                    <span class="text-xs text-slate-500 font-medium mb-1">Daily Calorie Goal:</span>
+                    <span class="text-2xl font-bold text-app-textDark">{{ metrics.selected_target }}</span>
+                </div>
+                <div class="bg-white rounded-xl p-4 card-shadow text-center flex flex-col justify-center">
+                    <span class="text-xs text-slate-500 font-medium mb-1">Target Achieved:</span>
+                    <span class="text-2xl font-bold text-app-textDark">{{ metrics.target_achieved }}/{{ metrics.total_days }} Days</span>
+                </div>
+            </div>
+
+            <!-- Meal Recommendations (Color Cards) -->
+            <div>
+                <h3 class="text-app-textDark text-lg font-bold mb-4 uppercase tracking-wide">Rekomendasi Hari Ini :</h3>
+                {% if rekomendasi %}
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <!-- Sarapan -->
+                    <div class="bg-app-orange rounded-xl p-4 text-white text-center flex flex-col items-center justify-between shadow-lg relative overflow-hidden">
+                        <span class="text-xs font-bold tracking-wider mb-3 z-10">SARAPAN (25%)</span>
+                        <div class="w-16 h-16 rounded-full bg-white/20 p-1 mb-3 z-10 shrink-0">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3014/3014491.png" class="w-full h-full object-cover rounded-full mix-blend-multiply opacity-80" alt="Food">
+                        </div>
+                        <div class="z-10 flex-1 flex flex-col justify-center">
+                            <p class="text-[10px] sm:text-xs font-medium leading-snug mb-2">{{ rekomendasi.menu.sarapan }}</p>
+                        </div>
+                        <form action="{{ url_for('progress.log_meal') }}" method="POST" class="w-full z-20 relative">
+                            <input type="hidden" name="meal_name" value="Sarapan Pagi">
+                            <input type="hidden" name="calories" value="{{ rekomendasi.calories.sarapan }}">
+                            <input type="hidden" name="date" value="{{ selected_date.strftime('%Y-%m-%d') }}">
+                            <button type="submit" class="w-full py-1.5 mt-3 bg-black/20 hover:bg-black/30 rounded-full text-[10px] font-bold tracking-wider transition">TANDAI SELESAI (+{{ rekomendasi.calories.sarapan }} Kcal)</button>
+                        </form>
+                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    </div>
+
+                    <!-- Makan Siang -->
+                    <div class="bg-app-red rounded-xl p-4 text-white text-center flex flex-col items-center justify-between shadow-lg relative overflow-hidden">
+                        <span class="text-xs font-bold tracking-wider mb-3 z-10">MAKAN SIANG (35%)</span>
+                        <div class="w-16 h-16 rounded-full bg-white/20 p-1 mb-3 z-10 shrink-0">
+                            <img src="https://cdn-icons-png.flaticon.com/512/8157/8157989.png" class="w-full h-full object-cover rounded-full mix-blend-multiply opacity-80" alt="Food">
+                        </div>
+                        <div class="z-10 flex-1 flex flex-col justify-center">
+                            <p class="text-[10px] sm:text-xs font-medium leading-snug mb-2">{{ rekomendasi.menu.siang }}</p>
+                        </div>
+                        <form action="{{ url_for('progress.log_meal') }}" method="POST" class="w-full z-20 relative">
+                            <input type="hidden" name="meal_name" value="Makan Siang">
+                            <input type="hidden" name="calories" value="{{ rekomendasi.calories.siang }}">
+                            <input type="hidden" name="date" value="{{ selected_date.strftime('%Y-%m-%d') }}">
+                            <button type="submit" class="w-full py-1.5 mt-3 bg-black/20 hover:bg-black/30 rounded-full text-[10px] font-bold tracking-wider transition">TANDAI SELESAI (+{{ rekomendasi.calories.siang }} Kcal)</button>
+                        </form>
+                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    </div>
+
+                    <!-- Makan Malam -->
+                    <div class="bg-app-slate rounded-xl p-4 text-white text-center flex flex-col items-center justify-between shadow-lg relative overflow-hidden">
+                        <span class="text-xs font-bold tracking-wider mb-3 z-10">MAKAN MALAM (25%)</span>
+                        <div class="w-16 h-16 rounded-full bg-white/20 p-1 mb-3 z-10 shrink-0">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3274/3274099.png" class="w-full h-full object-cover rounded-full mix-blend-multiply opacity-80" alt="Food">
+                        </div>
+                        <div class="z-10 flex-1 flex flex-col justify-center">
+                            <p class="text-[10px] sm:text-xs font-medium leading-snug mb-2">{{ rekomendasi.menu.malam }}</p>
+                        </div>
+                        <form action="{{ url_for('progress.log_meal') }}" method="POST" class="w-full z-20 relative">
+                            <input type="hidden" name="meal_name" value="Makan Malam">
+                            <input type="hidden" name="calories" value="{{ rekomendasi.calories.malam }}">
+                            <input type="hidden" name="date" value="{{ selected_date.strftime('%Y-%m-%d') }}">
+                            <button type="submit" class="w-full py-1.5 mt-3 bg-black/20 hover:bg-black/30 rounded-full text-[10px] font-bold tracking-wider transition">TANDAI SELESAI (+{{ rekomendasi.calories.malam }} Kcal)</button>
+                        </form>
+                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    </div>
+
+                    <!-- Camilan -->
+                    <div class="bg-app-darkblue rounded-xl p-4 text-white text-center flex flex-col items-center justify-between shadow-lg relative overflow-hidden">
+                        <span class="text-xs font-bold tracking-wider mb-3 z-10">CAMILAN (15%)</span>
+                        <div class="w-16 h-16 rounded-full bg-white/20 p-1 mb-3 z-10 shrink-0">
+                            <img src="https://cdn-icons-png.flaticon.com/512/3081/3081949.png" class="w-full h-full object-cover rounded-full mix-blend-multiply opacity-80" alt="Food">
+                        </div>
+                        <div class="z-10 flex-1 flex flex-col justify-center">
+                            <p class="text-[10px] sm:text-xs font-medium leading-snug mb-2">{{ rekomendasi.menu.camilan }}</p>
+                        </div>
+                        <form action="{{ url_for('progress.log_meal') }}" method="POST" class="w-full z-20 relative">
+                            <input type="hidden" name="meal_name" value="Camilan">
+                            <input type="hidden" name="calories" value="{{ rekomendasi.calories.camilan }}">
+                            <input type="hidden" name="date" value="{{ selected_date.strftime('%Y-%m-%d') }}">
+                            <button type="submit" class="w-full py-1.5 mt-3 bg-black/20 hover:bg-black/30 rounded-full text-[10px] font-bold tracking-wider transition">TANDAI SELESAI (+{{ rekomendasi.calories.camilan }} Kcal)</button>
+                        </form>
+                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-black/20 to-transparent"></div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="bg-white rounded-2xl p-10 card-shadow border border-slate-100 flex flex-col items-center justify-center text-center">
+                    <div class="w-20 h-20 bg-blue-50 text-app-blue rounded-full flex items-center justify-center mb-4">
+                        <i data-lucide="calculator" class="w-10 h-10"></i>
+                    </div>
+                    <h4 class="text-xl font-bold text-app-textDark mb-2">Belum Ada Rekomendasi Hari Ini</h4>
+                    <p class="text-sm text-slate-500 mb-6 max-w-md mx-auto">Sistem cerdas kami membutuhkan data profil kesehatan terbaru Anda untuk menyusun rencana makan yang akurat.</p>
+                    <a href="{{ url_for('main.calculator') }}" class="btn-primary py-3 px-6 shadow-md text-sm">Hitung Kebutuhan Kalori (Fuzzy AI)</a>
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-6">
+                <!-- Health Stats Chart -->
+                <div class="bg-white rounded-2xl p-5 card-shadow">
+                    <div class="flex justify-between items-center mb-2">
+                        <h3 class="text-lg font-bold text-app-textDark">Health Stats</h3>
+                        <div class="flex items-center gap-3 text-[10px] font-medium text-slate-500">
+                            <div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-app-green"></div> Calories</div>
+                            <div class="flex items-center gap-1"><div class="w-2 h-2 rounded-full bg-slate-400"></div> Target</div>
+                        </div>
+                    </div>
+                    <div class="relative h-60 w-full">
+                        <canvas id="healthStatsChart"></canvas>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Modal Manual Log -->
+<div id="manualLogModal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md card-shadow overflow-hidden">
+        <div class="bg-app-blue p-5 text-white flex justify-between items-center">
+            <h3 class="font-bold text-lg">Tambah Log Manual</h3>
+            <button onclick="document.getElementById('manualLogModal').classList.add('hidden')" class="hover:bg-white/20 p-1 rounded-full transition">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+        </div>
+        <form action="{{ url_for('progress.log_meal') }}" method="POST" class="p-6 space-y-4">
+            <input type="hidden" name="date" value="{{ selected_date.strftime('%Y-%m-%d') }}">
+            <div>
+                <label class="block text-sm font-semibold text-app-textDark mb-1">Nama Makanan / Sesi</label>
+                <input type="text" name="meal_name" placeholder="Misal: Sarapan Pagi, Gorengan..." class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-app-blue" required>
+            </div>
+            <div>
+                <label class="block text-sm font-semibold text-app-textDark mb-1">Total Kalori (Kcal)</label>
+                <input type="number" name="calories" placeholder="Misal: 350" class="w-full bg-slate-50 border border-slate-200 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-app-blue" required min="1" max="5000">
+            </div>
+            <div class="pt-4 flex gap-3">
+                <button type="button" onclick="document.getElementById('manualLogModal').classList.add('hidden')" class="flex-1 py-3 rounded-xl font-bold bg-slate-100 text-slate-500 hover:bg-slate-200 transition">Batal</button>
+                <button type="submit" class="flex-1 btn-primary py-3 rounded-xl shadow-md font-bold">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
 <script>
+    // Data from backend
     const chartData = {{ chart_data|safe }};
+    const avgDaily = {{ metrics.avg_daily }};
+    const todayTotal = {{ metrics.selected_total }};
+    const targetKcal = {{ metrics.selected_target }};
     
-    // Add custom font to Chart.js
-    Chart.defaults.font.family = 'Inter';
-    
-    if (chartData.dates.length > 0) {
-        // Weight Chart
-        const ctxWeight = document.getElementById('weightChart').getContext('2d');
-        new Chart(ctxWeight, {
+    Chart.defaults.font.family = 'Poppins';
+    Chart.defaults.color = '#94A3B8';
+
+    // 1. Macro Donut Chart
+    const ctxDonut = document.getElementById('macroDonut').getContext('2d');
+    new Chart(ctxDonut, {
+        type: 'doughnut',
+        data: {
+            labels: ['Consumed', 'Remaining'],
+            datasets: [{
+                data: [todayTotal, Math.max(0, targetKcal - todayTotal)],
+                backgroundColor: ['#4ADE80', '#E2E8F0'],
+                borderWidth: 0,
+                cutout: '75%'
+            }]
+        },
+        options: {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+            animation: { animateScale: true }
+        }
+    });
+
+    // 2. Mini Target Chart (Green Card)
+    if(chartData.dates && chartData.dates.length > 0) {
+        const ctxMini = document.getElementById('miniTargetChart').getContext('2d');
+        new Chart(ctxMini, {
             type: 'line',
             data: {
-                labels: chartData.dates,
+                labels: chartData.dates.slice(-7), // Last 7 days
                 datasets: [{
-                    label: 'Berat',
-                    data: chartData.weights,
-                    borderColor: '#2563EB',
-                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    data: chartData.calories.slice(-7),
+                    borderColor: '#FFFFFF',
                     borderWidth: 2,
-                    pointRadius: 3,
-                    pointBackgroundColor: '#2563EB',
-                    tension: 0.1,
-                    fill: true
+                    pointBackgroundColor: '#FFFFFF',
+                    pointRadius: 2,
+                    tension: 0.4
                 }]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { display: false } },
+                responsive: true, maintainAspectRatio: false,
+                plugins: { legend: { display: false }, tooltip: { enabled: false } },
                 scales: { 
-                    x: { ticks: { font: { family: 'JetBrains Mono', size: 10 } }, grid: { display: false } },
-                    y: { 
-                        suggestedMin: Math.min(...chartData.weights) - 2,
-                        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
-                        grid: { borderDash: [2, 4], color: '#E5E7EB' }
-                    } 
+                    x: { display: true, ticks: { color: 'rgba(255,255,255,0.7)', font: {size: 8} }, grid: {display: false} },
+                    y: { display: false, min: 0 } 
                 }
             }
         });
+    }
 
-        // Calorie Chart
-        const ctxCalorie = document.getElementById('calorieChart').getContext('2d');
-        new Chart(ctxCalorie, {
-            type: 'bar',
+    // 3. Health Stats Area Chart
+    if(chartData.dates && chartData.dates.length > 0) {
+        const ctxStats = document.getElementById('healthStatsChart').getContext('2d');
+        
+        // Create Gradient
+        const gradient = ctxStats.createLinearGradient(0, 0, 0, 150);
+        gradient.addColorStop(0, 'rgba(74, 222, 128, 0.4)'); // green-400
+        gradient.addColorStop(1, 'rgba(74, 222, 128, 0.0)');
+
+        new Chart(ctxStats, {
+            type: 'line',
             data: {
-                labels: chartData.dates,
+                labels: chartData.dates.slice(-7),
                 datasets: [
                     {
-                        label: 'Aktual',
-                        data: chartData.calories,
-                        backgroundColor: '#0F172A',
-                        barPercentage: 0.6
+                        label: 'Calories',
+                        data: chartData.calories.slice(-7),
+                        borderColor: '#4ADE80',
+                        backgroundColor: gradient,
+                        borderWidth: 2,
+                        pointBackgroundColor: '#FFFFFF',
+                        pointBorderColor: '#4ADE80',
+                        pointBorderWidth: 2,
+                        pointRadius: 4,
+                        fill: true,
+                        tension: 0.4
                     },
                     {
                         label: 'Target',
-                        data: chartData.targets,
+                        data: chartData.targets.slice(-7),
                         type: 'line',
-                        borderColor: '#F05252',
-                        borderWidth: 2,
+                        borderColor: '#94A3B8',
+                        borderWidth: 1,
+                        borderDash: [5, 5],
                         pointRadius: 0,
-                        borderDash: [4, 4]
+                        fill: false
                     }
                 ]
             },
             options: {
-                responsive: true,
-                maintainAspectRatio: false,
+                responsive: true, maintainAspectRatio: false,
                 plugins: { legend: { display: false } },
                 scales: { 
-                    x: { ticks: { font: { family: 'JetBrains Mono', size: 10 } }, grid: { display: false } },
+                    x: { grid: { display: false }, ticks: { font: {size: 10} } },
                     y: { 
-                        ticks: { font: { family: 'JetBrains Mono', size: 10 } },
-                        grid: { borderDash: [2, 4], color: '#E5E7EB' }
+                        grid: { borderDash: [2, 4], color: '#E2E8F0' },
+                        ticks: { font: {size: 10}, stepSize: 500 }
                     } 
                 }
             }
