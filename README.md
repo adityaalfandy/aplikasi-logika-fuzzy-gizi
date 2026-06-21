@@ -52,8 +52,14 @@ Instal semua modul/library yang dibutuhkan aplikasi (Flask, SQLAlchemy, Scikit-F
 pip install -r requirements.txt
 ```
 
-### 4. Konfigurasi Database (Otomatis!)
-Anda **TIDAK PERLU** melakukan setup *database* secara manual. Aplikasi ini telah diprogram menggunakan SQLite dan akan **membangun database serta seluruh tabelnya secara otomatis** (`nutriwise.db`) saat Anda menjalankan server untuk pertama kalinya.
+### 4. Konfigurasi Database MySQL
+Aplikasi ini dirancang menggunakan **MySQL** (biasanya melalui XAMPP/WAMP/Laragon). 
+1. Pastikan server MySQL Anda sedang menyala.
+2. Buka phpMyAdmin (atau *client* SQL Anda).
+3. Anda dapat melakukan salah satu dari 2 cara berikut:
+   - **Cara Otomatis:** Buat *database* kosong dengan nama `nutriwise_db`. Saat Anda menjalankan `run.py`, sistem akan otomatis membangun seluruh tabelnya!
+   - **Cara Manual:** Import file `nutriwise_db_schema.sql` yang sudah disediakan ke dalam server MySQL Anda (file ini otomatis membuat database `nutriwise_db` beserta strukturnya).
+4. *(Opsional)* Jika *password* root MySQL Anda bukan kosong, sesuaikan di dalam file `.env`.
 
 ### 5. Jalankan Aplikasi
 Jalankan server Flask dengan perintah:
