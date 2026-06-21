@@ -91,20 +91,28 @@
                         <table class="w-full text-left text-xs">
                             <thead>
                                 <tr class="text-app-textDark font-bold border-b-2 border-slate-100">
-                                    <th class="pb-2">Time</th>
+                                    <th class="pb-2 pl-2">Time</th>
                                     <th class="pb-2">Meal Name</th>
                                     <th class="pb-2">Calorie</th>
+                                    <th class="pb-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {% for log in logs[:4] %}
-                                <tr class="border-b border-slate-50 {% if loop.index0 % 2 == 0 %}bg-blue-50/50{% endif %}">
-                                    <td class="py-3 text-slate-500 font-medium">{{ log.tanggal.strftime('%d %b') }}</td>
+                                <tr class="border-b border-slate-50 {% if loop.index0 % 2 == 0 %}bg-blue-50/50{% endif %} hover:bg-slate-50 transition">
+                                    <td class="py-3 text-slate-500 font-medium pl-2">{{ log.tanggal.strftime('%d %b') }}</td>
                                     <td class="py-3 text-app-textDark font-medium">{{ log.catatan or 'Meal Log' }}</td>
                                     <td class="py-3 text-app-textDark font-semibold">{{ log.kalori_aktual }} Kcal</td>
+                                    <td class="py-3 pr-2 text-right">
+                                        <form action="{{ url_for('progress.delete_log', log_id=log.id) }}" method="POST" class="inline" onsubmit="return confirm('Hapus catatan makanan ini?');">
+                                            <button type="submit" title="Hapus" class="text-slate-400 hover:text-red-500 transition p-1 rounded-md hover:bg-red-50">
+                                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
                                 {% else %}
-                                <tr><td colspan="3" class="py-4 text-center text-slate-400">Belum ada data</td></tr>
+                                <tr><td colspan="4" class="py-4 text-center text-slate-400">Belum ada data</td></tr>
                                 {% endfor %}
                             </tbody>
                         </table>

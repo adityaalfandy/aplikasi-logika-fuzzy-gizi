@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Profil Saya - NutriWise{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto px-6 sm:px-8 lg:px-12 py-12">
+    <!-- Page Title -->
+    <div class="mb-8 text-white">
+        <h2 class="text-3xl font-bold">Profil & Pengaturan Akun</h2>
+        <p class="text-white/80 mt-2 text-sm">Perbarui informasi pribadi dan amankan akun Anda.</p>
+    </div>
+
+    <div class="bg-white rounded-2xl card-shadow overflow-hidden">
+        <div class="bg-blue-50 p-6 flex items-center gap-4 text-app-darkblue border-b border-blue-100">
+            <div class="w-16 h-16 rounded-full bg-app-darkblue text-white flex items-center justify-center font-bold text-2xl uppercase shadow-md">
+                {{ current_user.nama[0] }}
+            </div>
+            <div>
+                <h3 class="text-xl font-bold">{{ current_user.nama }}</h3>
+                <p class="text-sm font-medium opacity-80">{{ current_user.email }}</p>
+            </div>
+        </div>
+        
+        <div class="p-8">
+            <form action="{{ url_for('auth.profile') }}" method="POST" class="space-y-6">
+                {{ form.hidden_tag() }}
+                
+                <div>
+                    <h4 class="text-lg font-bold text-app-textDark mb-4 flex items-center gap-2"><i data-lucide="user" class="w-5 h-5 text-app-blue"></i> Informasi Pribadi</h4>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            {{ form.nama.label(class="block text-sm font-semibold text-app-textDark mb-1") }}
+                            {{ form.nama(class="w-full input-crisp px-4 py-3 bg-slate-50 text-sm", placeholder="Nama Lengkap Anda") }}
+                            {% for error in form.nama.errors %}
+                                <span class="text-red-500 text-xs">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div>
+                            {{ form.email.label(class="block text-sm font-semibold text-app-textDark mb-1") }}
+                            {{ form.email(class="w-full input-crisp px-4 py-3 bg-slate-50 text-sm", placeholder="Email Anda") }}
+                            {% for error in form.email.errors %}
+                                <span class="text-red-500 text-xs">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-100 my-6">
+
+                <div>
+                    <h4 class="text-lg font-bold text-app-textDark mb-4 flex items-center gap-2"><i data-lucide="lock" class="w-5 h-5 text-app-orange"></i> Keamanan Akun</h4>
+                    <p class="text-xs text-slate-500 mb-4">Kosongkan kolom di bawah jika Anda tidak ingin mengubah password.</p>
+                    <div class="space-y-4">
+                        <div>
+                            {{ form.old_password.label(class="block text-sm font-semibold text-app-textDark mb-1") }}
+                            {{ form.old_password(class="w-full input-crisp px-4 py-3 bg-slate-50 text-sm", placeholder="Masukkan password saat ini") }}
+                            {% for error in form.old_password.errors %}
+                                <span class="text-red-500 text-xs">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                {{ form.new_password.label(class="block text-sm font-semibold text-app-textDark mb-1") }}
+                                {{ form.new_password(class="w-full input-crisp px-4 py-3 bg-slate-50 text-sm", placeholder="Password baru (opsional)") }}
+                                {% for error in form.new_password.errors %}
+                                    <span class="text-red-500 text-xs">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            <div>
+                                {{ form.confirm_password.label(class="block text-sm font-semibold text-app-textDark mb-1") }}
+                                {{ form.confirm_password(class="w-full input-crisp px-4 py-3 bg-slate-50 text-sm", placeholder="Konfirmasi password baru") }}
+                                {% for error in form.confirm_password.errors %}
+                                    <span class="text-red-500 text-xs">{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6">
+                    {{ form.submit(class="w-full btn-primary cursor-pointer text-center") }}
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

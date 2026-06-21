@@ -160,3 +160,22 @@ def log_meal():
     flash(f'{meal_name} berhasil dicatat! (+{calories} Kcal)', 'success')
     
     return redirect(url_for('progress.dashboard', date=log_date.strftime('%Y-%m-%d')))
+
+@progress.route('/delete-log/<int:log_id>', methods=['POST'])
+@login_required
+def delete_log(log_id):
+    log = ProgressLog.query.get_or_404(log_id)
+    
+    # Keamanan: Pastikan hanya pemilik log yang bisa menghapus
+    if log.user_id != current_user.id:
+        flash('Akses ditolak.', 'danger')
+        return redirect(url_for('progress.dashboard'))
+    
+    date_str = log.tanggal.strftime('%Y-%m-%d')
+    meal_name = log.catatan or 'Meal Log'
+    
+    db.session.delete(log)
+    db.session.commit()
+    
+    flash(f'{meal_name} berhasil dihapus.', 'success')
+    return redirect(url_for('progress.dashboard', date=date_str))

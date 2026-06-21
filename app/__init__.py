@@ -39,4 +39,8 @@ def create_app(config_class=Config):
 
     from app import models
 
+    # Create database automatically on startup if not exists
+    with app.app_context():
+        db.create_all()
+
     return app

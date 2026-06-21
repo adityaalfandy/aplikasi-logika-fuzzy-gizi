@@ -45,3 +45,37 @@ def logout():
     logout_user()
     flash('Anda telah berhasil logout.', 'info')
     return redirect(url_for('main.index'))
+
+from app.forms import UpdateProfileForm
+
+@auth.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    form = UpdateProfileForm()
+    if form.validate_on_submit():
+        # Update email and name
+        current_user.nama = form.nama.data
+        current_user.email = form.email.data
+        
+        # Update password if old password matches and new password is provided
+        if form.new_password.data:
+            if not form.old_password.data:
+                flash('Masukkan password saat ini untuk mengubah password baru.', 'danger')
+                return render_template('auth/profile.html', form=form)
+            
+            if not bcrypt.check_password_hash(current_user.password_hash, form.old_password.data):
+                flash('Password saat ini salah.', 'danger')
+                return render_template('auth/profile.html', form=form)
+                
+            hashed_password = bcrypt.generate_password_hash(form.new_password.data).decode('utf-8')
+            current_user.password_hash = hashed_password
+            
+        db.session.commit()
+        flash('Profil berhasil diperbarui!', 'success')
+        return redirect(url_for('auth.profile'))
+        
+    elif request.method == 'GET':
+        form.nama.data = current_user.nama
+        form.email.data = current_user.email
+        
+    return render_template('auth/profile.html', form=form)

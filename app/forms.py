@@ -37,3 +37,14 @@ class ProgressForm(FlaskForm):
     kalori_aktual = IntegerField('Total Kalori Dikonsumsi (kkal)', validators=[DataRequired(), NumberRange(min=500, max=10000)])
     catatan = TextAreaField('Catatan / Jurnal Harian')
     submit = SubmitField('Simpan Progress')
+
+from wtforms import PasswordField
+from wtforms.validators import EqualTo
+
+class UpdateProfileForm(FlaskForm):
+    nama = StringField('Nama Lengkap', validators=[DataRequired(), Length(max=100)])
+    email = StringField('Email', validators=[DataRequired(), Length(max=255)])
+    old_password = PasswordField('Password Saat Ini (kosongkan jika tidak ingin mengubah password)')
+    new_password = PasswordField('Password Baru', validators=[Optional(), Length(min=6)])
+    confirm_password = PasswordField('Konfirmasi Password Baru', validators=[EqualTo('new_password', message='Password baru harus cocok.')])
+    submit = SubmitField('Simpan Perubahan')
