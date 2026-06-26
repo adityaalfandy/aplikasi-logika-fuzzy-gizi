@@ -1,6 +1,11 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, IntegerField, FloatField, SelectField, SubmitField
+from wtforms import StringField, IntegerField, FloatField, SelectField, SubmitField, SelectMultipleField
 from wtforms.validators import DataRequired, NumberRange, Length, Optional
+from wtforms import widgets
+
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
 
 class CalculatorForm(FlaskForm):
     nama = StringField('Nama', validators=[Optional(), Length(max=100)])
@@ -15,6 +20,12 @@ class CalculatorForm(FlaskForm):
         ('very', 'Very Active (Olahraga Intens 6-7x/minggu)'),
         ('extra', 'Extra Active (Atlet/Pekerjaan Fisik Berat)')
     ], validators=[DataRequired()])
+    alergi = MultiCheckboxField('Alergi & Pantangan', choices=[
+        ('seafood', 'Seafood (Ikan laut, Udang, dll)'),
+        ('contains_peanut', 'Kacang-kacangan'),
+        ('dairy', 'Produk Susu (Dairy)'),
+        ('contains_gluten', 'Gluten')
+    ])
     submit = SubmitField('Hitung Nutrisi')
 
 class LoginForm(FlaskForm):

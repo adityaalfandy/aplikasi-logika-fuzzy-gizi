@@ -12,6 +12,7 @@ class HealthProfile(db.Model):
     umur = db.Column(db.SmallInteger, nullable=False)
     jenis_kelamin = db.Column(db.Enum('L', 'P'), nullable=False)
     aktivitas = db.Column(db.Enum('sedentary', 'lightly', 'moderately', 'very', 'extra'), nullable=False)
+    alergi = db.Column(db.String(255), nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
 
     result = db.relationship('Result', backref='profile', uselist=False)

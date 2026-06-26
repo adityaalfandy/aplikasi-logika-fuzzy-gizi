@@ -31,6 +31,8 @@ def calculator():
                 form.berat_badan.data = float(latest_profile.berat_badan)
                 form.tinggi_badan.data = latest_profile.tinggi_badan
                 form.aktivitas.data = latest_profile.aktivitas
+                if latest_profile.alergi:
+                    form.alergi.data = latest_profile.alergi.split(',')
             else:
                 form.nama.data = current_user.nama
         elif 'result_data' in session:
@@ -41,6 +43,8 @@ def calculator():
             form.berat_badan.data = rd.get('berat_badan')
             form.tinggi_badan.data = rd.get('tinggi_badan')
             form.aktivitas.data = rd.get('aktivitas')
+            if rd.get('alergi'):
+                form.alergi.data = rd.get('alergi').split(',')
 
     if form.validate_on_submit():
         from flask_login import current_user
@@ -57,6 +61,9 @@ def calculator():
         berat_badan = form.berat_badan.data
         tinggi_badan = form.tinggi_badan.data
         aktivitas = form.aktivitas.data
+        
+        alergi_list = form.alergi.data
+        alergi_str = ','.join(alergi_list) if alergi_list else None
         
         # Kalkulasi Nutrisi Dasar
         bmi = calculate_bmi(berat_badan, tinggi_badan)
@@ -99,7 +106,8 @@ def calculator():
             tinggi_badan=tinggi_badan,
             umur=umur,
             jenis_kelamin=jenis_kelamin,
-            aktivitas=aktivitas
+            aktivitas=aktivitas,
+            alergi=alergi_str
         )
         db.session.add(profile)
         db.session.commit() # Commit untuk dapatkan profile.id
@@ -120,7 +128,7 @@ def calculator():
         
         # Store result in session to pass to result page
         from app.utils.food_recommendation import get_food_recommendations
-        rekomendasi = get_food_recommendations(kalori_fuzzy)
+        rekomendasi = get_food_recommendations(kalori_fuzzy, alergi_list)
         
         session['result_data'] = {
             'nama': nama,
@@ -129,6 +137,7 @@ def calculator():
             'berat_badan': berat_badan,
             'tinggi_badan': tinggi_badan,
             'aktivitas': aktivitas,
+            'alergi': alergi_str,
             'bmi': bmi,
             'status_bmi': status_bmi,
             'berat_ideal': berat_ideal,

@@ -39,6 +39,15 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- MathJax for formula rendering -->
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
@@ -59,11 +68,11 @@
     <nav class="pt-6 px-6 sm:px-8 lg:px-12 w-full max-w-7xl mx-auto">
         <div class="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl flex justify-between h-16 items-center px-6">
             <div class="flex items-center gap-3">
-                <div class="bg-white p-1.5 rounded-full w-8 h-8 flex items-center justify-center">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3143/3143643.png" alt="Logo" class="w-full h-full object-cover">
+                <div class="bg-white p-1 rounded-full w-12 h-12 flex items-center justify-center overflow-hidden shadow-sm shrink-0">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="w-full h-full object-contain">
                 </div>
                 <a href="{{ url_for('main.index') }}" class="font-bold text-xl tracking-wider text-white">
-                    NutriWise
+                    Nutri<span class="text-[#9fd138]">Wise</span>
                 </a>
             </div>
             <div class="flex items-center space-x-6">
@@ -106,7 +115,7 @@
     <!-- Footer -->
     <footer class="mt-auto py-8">
         <div class="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 flex flex-col md:flex-row justify-between items-center text-xs text-white/60">
-            <p>&copy; 2026 NutriWise AI System</p>
+            <p>&copy; 2026 Nutri<span class="text-[#9fd138]">Wise</span> AI System</p>
             <p class="mt-2 md:mt-0">Precision Nutrition based on Fuzzy Logic</p>
         </div>
     </footer>

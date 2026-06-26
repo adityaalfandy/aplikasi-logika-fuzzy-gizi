@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS health_profiles (
     berat_badan FLOAT NOT NULL,
     tinggi_badan INT NOT NULL,
     aktivitas VARCHAR(50) NOT NULL,
+    alergi VARCHAR(255) NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -54,4 +55,15 @@ CREATE TABLE IF NOT EXISTS progress_logs (
     catatan TEXT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+-- 5. Tabel Food Items (Database Makanan untuk Rekomendasi Menu)
+CREATE TABLE IF NOT EXISTS food_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nama VARCHAR(255) NOT NULL,
+    kategori VARCHAR(50) NOT NULL,
+    kalori INT NOT NULL,
+    porsi VARCHAR(100) NOT NULL,
+    tags VARCHAR(255) NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
