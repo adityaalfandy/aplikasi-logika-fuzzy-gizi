@@ -97,10 +97,9 @@ def dashboard():
 
     # Rekomendasi Menu
     rekomendasi_menu = None
-    if latest_result:
-        from app.utils.food_recommendation import get_food_recommendations
-        rekomendasi_menu = get_food_recommendations(selected_target)
-
+    if latest_result and hasattr(latest_result, 'rekomendasi_menu'):
+        rekomendasi_menu = latest_result.rekomendasi_menu
+        
     metrics = {
         'avg_daily': avg_daily_kcal,
         'total_weekly': total_weekly_kcal,

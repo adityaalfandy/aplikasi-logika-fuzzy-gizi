@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS results (
     lemak_g INT NOT NULL,
     karbo_g INT NOT NULL,
     fuzzy_detail JSON NOT NULL, -- Menyimpan log Explainable AI
+    rekomendasi_menu JSON NULL, -- Menyimpan log menu makanan
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (profile_id) REFERENCES health_profiles(id) ON DELETE CASCADE
 );

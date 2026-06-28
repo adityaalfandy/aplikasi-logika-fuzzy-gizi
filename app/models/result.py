@@ -14,4 +14,5 @@ class Result(db.Model):
     lemak_g = db.Column(db.Numeric(5, 1))
     karbo_g = db.Column(db.Numeric(5, 1))
     fuzzy_detail = db.Column(db.JSON)
+    rekomendasi_menu = db.Column(db.JSON)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)

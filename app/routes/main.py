@@ -112,6 +112,9 @@ def calculator():
         db.session.add(profile)
         db.session.commit() # Commit untuk dapatkan profile.id
         
+        from app.utils.food_recommendation import get_food_recommendations
+        rekomendasi = get_food_recommendations(kalori_fuzzy, alergi_list)
+        
         result_db = Result(
             profile_id=profile.id,
             bmi=bmi,
@@ -121,14 +124,13 @@ def calculator():
             protein_g=protein_g,
             lemak_g=lemak_g,
             karbo_g=karbo_g,
-            fuzzy_detail=fuzzy_result
+            fuzzy_detail=fuzzy_result,
+            rekomendasi_menu=rekomendasi
         )
         db.session.add(result_db)
         db.session.commit()
         
         # Store result in session to pass to result page
-        from app.utils.food_recommendation import get_food_recommendations
-        rekomendasi = get_food_recommendations(kalori_fuzzy, alergi_list)
         
         session['result_data'] = {
             'nama': nama,
