@@ -26,7 +26,7 @@ Anda hanya perlu mengikuti langkah-langkah di bawah ini untuk menjalankan NutriW
 ### 1. Unduh / Clone Repositori
 Buka terminal/Command Prompt dan arahkan ke folder yang Anda inginkan, lalu jalankan:
 ```bash
-git clone <url-repositori-ini>
+git clone https://github.com/adityaalfandy/aplikasi-logika-fuzzy-gizi
 cd nutriwise_ai
 ```
 *(Jika Anda mengunduh berformat .zip, cukup ekstrak dan buka terminal di dalam folder tersebut).*
